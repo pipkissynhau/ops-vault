@@ -1,4 +1,4 @@
-# 一、先记一句总概括
+# 1. Start with a one-sentence summary
 
 These three methods are essentially **application deployment strategies**, with the following differences:
 
@@ -8,7 +8,7 @@ These three methods are essentially **application deployment strategies**, with 
 
 ---
 
-# 二、What is Rolling Update
+# 2. What is Rolling Update
 
 ## 1. Definition
 Rolling Update is the most common deployment method in Kubernetes by default.
@@ -64,7 +64,7 @@ strategy:
 
 ---
 
-# 三、What is Blue-Green Deployment
+# 3. What is Blue-Green Deployment
 
 ## 1. Definition
 Blue-Green Deployment involves preparing two nearly identical environments: one for running the old version and the other for the new version. Once the new version has been tested and verified, traffic is switched from the old environment to the new one in a single step.
