@@ -1,0 +1,212 @@
+{
+  "main": {
+    "id": "8ee09348ca57e2b6",
+    "type": "split",
+    "children": [
+      {
+        "id": "11dbec459826b220",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "847f563de188a593",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/06-Summary of Scheduling Strategy Phase - From Resource Requests to Workload Placement.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "06-Summary of Scheduling Strategy Phase - From Resource Requests to Workload Placement"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "4a3b54271ba24717",
+    "type": "split",
+    "children": [
+      {
+        "id": "1ac7d4118d66c2a5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "385508c4aa8730f6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "2f25f11822454e4d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "cdc72b37a6605aa0",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 410.5
+  },
+  "right": {
+    "id": "67aacaf6017c034c",
+    "type": "split",
+    "children": [
+      {
+        "id": "050f9226a792f189",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0d3e2af0fb797042",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "73e4b933c9c59a6c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "6ccbb1d02951b098",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "4ee3ccc5acfe4ee5",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "caad9e903542014d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "385508c4aa8730f6",
+  "lastOpenFiles": [
+    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/05-Topological Spread Constraints - An Introduction to topologySpreadConstraints.md",
+    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/04 - Basics of Taints and Tolerations - An Introduction to Taints and Toleration Rules.md",
+    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/03-Pod Affinity and Anti-Affinity - Why Some Pods Should Be Deployed Nearby or Distantly.md",
+    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/02-Node Affinity Basics - nodeAffinity and More Flexible Node Selection.md",
+    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/01-Introduction to nodeSelector - Scheduling Pods to Specific Nodes.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/10-Resource Management and Auto Scaling Phase Summary - From Requests and Pending to HPA, VPA, and Capacity Governance.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/09-HPA and VPA - Horizontal and Vertical Scaling, and Applicable Scenarios.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/08-VPA Basics - Vertical Scaling, Prerequisites for Installation, and Basic Practices.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/07-Why a Pod May Not Start Even After HPA Scaling - The Relationship Between Scheduling and Resource Capacity.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/06-HPA Basics - Introduction to Pod Automatic Scaling.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/05 - Basics of Node Resource Pressure and Eviction Mechanism - Introduction to Eviction.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/04-QoS Basics - Guaranteed, Burstable, and BestEffort.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/03-Why Pods Remain in the Pending State - Troubleshooting Insufficient Resources and Scheduling Failures.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/02-How Resource Requests Affect Pod Scheduling - From Pending to Scheduling Decision.md",
+    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/01-Requests and Limits Basics - Resource Management and OOMKilled Introduction.md",
+    "04-Kubernetes/07-Application Deployment/07-Application Health Checks and Availability Assurance/02-startupProbe Basics and Applications for Slow Startup Scenarios.md",
+    "04-Kubernetes/07-Application Deployment/07-Application Health Checks and Availability Assurance/01-livenessProbe and readinessProbe Basic Practices.md",
+    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/06-Ingress Common Issues Troubleshooting - Unable to Access, 404, 502, and No Traffic to the Backend.md",
+    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/05-First Ingress Practice - Exposing Nginx Service Using ingress-nginx.md",
+    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/04-ingress-nginx Installation and Entry Preparation - Controller Installation and NodePort Exposure Based on Kubeadm Cluster.md",
+    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/03-Ingress Controller Basics - Why Ingress YAML Alone Is Not Enough.md",
+    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/02-Why Ingress Is Needed - From NodePort to a Unified Layer 7 Entry Point.md",
+    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/01-Service Advanced Topics - Selectors, Endpoints, and the Basics of Why a Service May Be Present but Not Functioning Properly in Business Context.md",
+    "04-Kubernetes/07-Application Deployment/05-Application Configuration and Secret Management/06-Private Image Repository Authentication - Basic Practices with imagePullSecrets.md",
+    "04-Kubernetes/07-Application Deployment/05-Application Configuration and Secret Management/05-The Differences, Boundaries, and Selection Principles between ConfigMap and Secret.md",
+    "04-Kubernetes/07-Application Deployment/05-Application Configuration and Secret Management/04-Secret Basics - Introduction to Sensitive Configuration Management.md"
+  ]
+}
