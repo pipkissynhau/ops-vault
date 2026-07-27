@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "05-Storage/02-MinIO/00-MinIO目录索引.en.md",
+                "file": "99-面试宝典/2026-04-09-面试复盘：Kubernetes 高频问题与消息队列补充.en.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "00-MinIO目录索引.en"
+              "title": "2026-04-09-面试复盘：Kubernetes 高频问题与消息队列补充.en"
             }
           }
         ]
@@ -180,37 +180,38 @@
       "bases:Create new base": false
     }
   },
-  "active": "847f563de188a593",
+  "active": "385508c4aa8730f6",
   "lastOpenFiles": [
-    "05-Storage/01-Ceph/99-Ceph Phase Summary - From Architecture Understanding to Production Operations and Maintenance.md",
-    "05-Storage/01-Ceph/20-Comprehensive Ceph Practice - Production Acceptance, Fault Drills, and Advanced SRE Closed-loop.md",
-    "05-Storage/01-Ceph/19-Ceph Monitoring and Alerts - Dashboard, Prometheus, Grafana, and Alert System Construction.md",
-    "05-Storage/01-Ceph/18-Ceph Security Reinforcement - CephX Permissions, Network Isolation, Dashboard, RGW HTTPS, and Key Management.md",
-    "05-Storage/01-Ceph/17-Ceph Performance Optimization - Load Testing, Bottleneck Identification, Parameter Tuning, and Production Baselines.md",
-    "05-Storage/01-Ceph/16-Ceph Backup, Recovery, and Disaster Recovery Exercises - Protection of RBD, CephFS, RGW, and Cluster Metadata.md",
-    "05-Storage/01-Ceph/15-Ceph Troubleshooting - Common Issues with OSD, PG, MON, MDS, RGW, and CSI.md",
-    "05-Storage/01-Ceph/14-Ceph Daily Operations and Maintenance - Health Checks, Capacity Management, Service Inspections, and Risk Governance.md",
-    "05-Storage/01-Ceph/13-Ceph Integration with Kubernetes - Practical Applications of CephFS CSI File Sharing Storage.md",
-    "05-Storage/01-Ceph/12-Integrating Ceph with Kubernetes - Practical Approaches to RBD CSI Dynamic Volume Provisioning.md",
-    "05-Storage/01-Ceph/11-Ceph RGW Object Storage - S3 Interface, Bucket, User, and Object Management Practices.md",
-    "05-Storage/01-Ceph/10-CephFS File Storage - MDS, File System Creation, and Mounting Practices.md",
-    "05-Storage/01-Ceph/09-Ceph RBD Block Storage - Image, Snapshot, Clone, and Common Operations.md",
-    "05-Storage/01-Ceph/08-Ceph CRUSH Rules - Failure Domains, Data Placement, and Rack-Level High Availability.md",
-    "05-Storage/01-Ceph/07-Ceph Pools and Placement Groups - Understanding Data Distribution, Number of Replicas, and Status of Placement Groups.md",
-    "05-Storage/01-Ceph/06-Ceph OSD Management - Adding, Removing, Replacing Disks, and Capacity Expansion.md",
-    "05-Storage/01-Ceph/05-Ceph Cluster Deployment Practice - Basic Installation of cephadm and Cluster Initialization.md",
-    "05-Storage/01-Ceph/04-Ceph Cluster Deployment Planning - Node, Disk, Network, and Fault Domain Design.md",
-    "05-Storage/01-Ceph/03-Ceph Storage Types - Differences Between RBD, CephFS, and RGW Object Storage.md",
-    "05-Storage/01-Ceph/02-Ceph Core Architecture - RADOS, MON, MGR, OSD, and CRUSH.md",
-    "05-Storage/01-Ceph/01-Ceph Basics - Why Distributed Storage is Needed and the Overall Architecture of Ceph.md",
-    "05-Storage/01-Ceph/00-Ceph Directory Index.md",
-    "04-Kubernetes/README.en.md",
-    "04-Kubernetes/00-Kubernetes General Index.md",
-    "00-Containerization.md",
+    "New Text Document.txt",
+    "07-中间件/消息队列/Kafka.en.md",
+    "08-CI-CD/01-CI-CD主线：从构建到GitOps/01-为什么K8s需要CI-CD：从手工发布到云原生应用交付.en.md",
+    "08-CI-CD/01-CI-CD主线：从构建到GitOps/00-目录索引.en.md",
+    "10-日志/02-Loki/01-Loki基础认知与实验环境规划.en.md",
+    "10-日志/02-Loki/15-Loki综合实战：从零搭建K8S日志平台闭环.en.md",
+    "10-日志/02-Loki/09-LogQL进阶查询实战：json-logfmt-regexp-unwrap.en.md",
+    "10-日志/02-Loki/08-LogQL基础查询实战：Namespace-Pod-Container日志检索.en.md",
+    "10-日志/02-Loki/06-Grafana-Alloy采集K8S-Pod日志实战.en.md",
+    "10-日志/02-Loki/07-Loki标签设计与高基数问题实验.en.md",
+    "10-日志/02-Loki/04-Loki单体模式Helm部署实战.en.md",
+    "10-日志/02-Loki/02-Loki架构原理与组件职责实操观察.en.md",
+    "11-GPU/GPU调度.en.md",
+    "11-GPU/GPU驱动.en.md",
+    "12-虚拟化/虚拟化原理.en.md",
+    "12-虚拟化/目录索引.en.md",
+    "12-虚拟化/KVM.en.md",
+    "12-虚拟化/VMware.en.md",
+    "12-虚拟化/Libvirt.en.md",
+    "15-容器网络/ServiceMesh网络.en.md",
+    "15-容器网络/CNI原理.en.md",
+    "15-容器网络/Cilium.en.md",
+    "15-容器网络/Calico架构.en.md",
+    "20-Runbook/备份恢复Runbook.en.md",
+    "20-Runbook/发布回滚Runbook.en.md",
+    "18-SRE/SLO.en.md",
+    "LICENSE",
     "06-Storage",
     "05-DNS",
     "04-Networking",
-    "02-CoreComponents",
-    "04-Kubernetes/12-KubeVirt/README.md"
+    "02-CoreComponents"
   ]
 }
