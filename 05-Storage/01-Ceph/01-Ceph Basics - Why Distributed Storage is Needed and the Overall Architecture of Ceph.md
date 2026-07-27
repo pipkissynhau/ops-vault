@@ -1,4 +1,3 @@
-# Ceph Basics: Why Distributed Storage is Needed and the Overall Architecture of Ceph
 
 # Ceph Basics: Why Distributed Storage is Needed and the Overall Architecture of Ceph
 

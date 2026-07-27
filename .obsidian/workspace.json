@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/06-Summary of Scheduling Strategy Phase - From Resource Requests to Workload Placement.md",
+                "file": "05-Storage/02-MinIO/00-MinIO目录索引.en.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "06-Summary of Scheduling Strategy Phase - From Resource Requests to Workload Placement"
+              "title": "00-MinIO目录索引.en"
             }
           }
         ]
@@ -180,33 +180,37 @@
       "bases:Create new base": false
     }
   },
-  "active": "385508c4aa8730f6",
+  "active": "847f563de188a593",
   "lastOpenFiles": [
-    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/05-Topological Spread Constraints - An Introduction to topologySpreadConstraints.md",
-    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/04 - Basics of Taints and Tolerations - An Introduction to Taints and Toleration Rules.md",
-    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/03-Pod Affinity and Anti-Affinity - Why Some Pods Should Be Deployed Nearby or Distantly.md",
-    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/02-Node Affinity Basics - nodeAffinity and More Flexible Node Selection.md",
-    "04-Kubernetes/07-Application Deployment/09-Scheduling Policies and Workload Placement/01-Introduction to nodeSelector - Scheduling Pods to Specific Nodes.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/10-Resource Management and Auto Scaling Phase Summary - From Requests and Pending to HPA, VPA, and Capacity Governance.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/09-HPA and VPA - Horizontal and Vertical Scaling, and Applicable Scenarios.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/08-VPA Basics - Vertical Scaling, Prerequisites for Installation, and Basic Practices.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/07-Why a Pod May Not Start Even After HPA Scaling - The Relationship Between Scheduling and Resource Capacity.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/06-HPA Basics - Introduction to Pod Automatic Scaling.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/05 - Basics of Node Resource Pressure and Eviction Mechanism - Introduction to Eviction.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/04-QoS Basics - Guaranteed, Burstable, and BestEffort.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/03-Why Pods Remain in the Pending State - Troubleshooting Insufficient Resources and Scheduling Failures.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/02-How Resource Requests Affect Pod Scheduling - From Pending to Scheduling Decision.md",
-    "04-Kubernetes/07-Application Deployment/08-Resource Management and Elastic Scaling/01-Requests and Limits Basics - Resource Management and OOMKilled Introduction.md",
-    "04-Kubernetes/07-Application Deployment/07-Application Health Checks and Availability Assurance/02-startupProbe Basics and Applications for Slow Startup Scenarios.md",
-    "04-Kubernetes/07-Application Deployment/07-Application Health Checks and Availability Assurance/01-livenessProbe and readinessProbe Basic Practices.md",
-    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/06-Ingress Common Issues Troubleshooting - Unable to Access, 404, 502, and No Traffic to the Backend.md",
-    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/05-First Ingress Practice - Exposing Nginx Service Using ingress-nginx.md",
-    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/04-ingress-nginx Installation and Entry Preparation - Controller Installation and NodePort Exposure Based on Kubeadm Cluster.md",
-    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/03-Ingress Controller Basics - Why Ingress YAML Alone Is Not Enough.md",
-    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/02-Why Ingress Is Needed - From NodePort to a Unified Layer 7 Entry Point.md",
-    "04-Kubernetes/07-Application Deployment/06-Service Discovery and Traffic Exposure/01-Service Advanced Topics - Selectors, Endpoints, and the Basics of Why a Service May Be Present but Not Functioning Properly in Business Context.md",
-    "04-Kubernetes/07-Application Deployment/05-Application Configuration and Secret Management/06-Private Image Repository Authentication - Basic Practices with imagePullSecrets.md",
-    "04-Kubernetes/07-Application Deployment/05-Application Configuration and Secret Management/05-The Differences, Boundaries, and Selection Principles between ConfigMap and Secret.md",
-    "04-Kubernetes/07-Application Deployment/05-Application Configuration and Secret Management/04-Secret Basics - Introduction to Sensitive Configuration Management.md"
+    "05-Storage/01-Ceph/99-Ceph Phase Summary - From Architecture Understanding to Production Operations and Maintenance.md",
+    "05-Storage/01-Ceph/20-Comprehensive Ceph Practice - Production Acceptance, Fault Drills, and Advanced SRE Closed-loop.md",
+    "05-Storage/01-Ceph/19-Ceph Monitoring and Alerts - Dashboard, Prometheus, Grafana, and Alert System Construction.md",
+    "05-Storage/01-Ceph/18-Ceph Security Reinforcement - CephX Permissions, Network Isolation, Dashboard, RGW HTTPS, and Key Management.md",
+    "05-Storage/01-Ceph/17-Ceph Performance Optimization - Load Testing, Bottleneck Identification, Parameter Tuning, and Production Baselines.md",
+    "05-Storage/01-Ceph/16-Ceph Backup, Recovery, and Disaster Recovery Exercises - Protection of RBD, CephFS, RGW, and Cluster Metadata.md",
+    "05-Storage/01-Ceph/15-Ceph Troubleshooting - Common Issues with OSD, PG, MON, MDS, RGW, and CSI.md",
+    "05-Storage/01-Ceph/14-Ceph Daily Operations and Maintenance - Health Checks, Capacity Management, Service Inspections, and Risk Governance.md",
+    "05-Storage/01-Ceph/13-Ceph Integration with Kubernetes - Practical Applications of CephFS CSI File Sharing Storage.md",
+    "05-Storage/01-Ceph/12-Integrating Ceph with Kubernetes - Practical Approaches to RBD CSI Dynamic Volume Provisioning.md",
+    "05-Storage/01-Ceph/11-Ceph RGW Object Storage - S3 Interface, Bucket, User, and Object Management Practices.md",
+    "05-Storage/01-Ceph/10-CephFS File Storage - MDS, File System Creation, and Mounting Practices.md",
+    "05-Storage/01-Ceph/09-Ceph RBD Block Storage - Image, Snapshot, Clone, and Common Operations.md",
+    "05-Storage/01-Ceph/08-Ceph CRUSH Rules - Failure Domains, Data Placement, and Rack-Level High Availability.md",
+    "05-Storage/01-Ceph/07-Ceph Pools and Placement Groups - Understanding Data Distribution, Number of Replicas, and Status of Placement Groups.md",
+    "05-Storage/01-Ceph/06-Ceph OSD Management - Adding, Removing, Replacing Disks, and Capacity Expansion.md",
+    "05-Storage/01-Ceph/05-Ceph Cluster Deployment Practice - Basic Installation of cephadm and Cluster Initialization.md",
+    "05-Storage/01-Ceph/04-Ceph Cluster Deployment Planning - Node, Disk, Network, and Fault Domain Design.md",
+    "05-Storage/01-Ceph/03-Ceph Storage Types - Differences Between RBD, CephFS, and RGW Object Storage.md",
+    "05-Storage/01-Ceph/02-Ceph Core Architecture - RADOS, MON, MGR, OSD, and CRUSH.md",
+    "05-Storage/01-Ceph/01-Ceph Basics - Why Distributed Storage is Needed and the Overall Architecture of Ceph.md",
+    "05-Storage/01-Ceph/00-Ceph Directory Index.md",
+    "04-Kubernetes/README.en.md",
+    "04-Kubernetes/00-Kubernetes General Index.md",
+    "00-Containerization.md",
+    "06-Storage",
+    "05-DNS",
+    "04-Networking",
+    "02-CoreComponents",
+    "04-Kubernetes/12-KubeVirt/README.md"
   ]
 }

@@ -1,7 +1,7 @@
-`values.yaml` 是 Helm Chart 的参数配置文件。它的作用是为 Chart 模板提供参数，覆盖默认配置，并影响最终渲染出来的 Kubernetes 对象。
+`values.yaml` is the parameter configuration file for a Helm Chart. Its purpose is to provide parameters for the Chart templates, override default configurations, and influence the final rendered Kubernetes objects.
 
-### values.yaml 和 ConfigMap 的区别
-虽然 `values.yaml` 和 ConfigMap 都用于配置 Kubernetes 对象，但它们的用途和机制有所不同。`values.yaml` 主要用于为 Helm Chart 提供动态参数配置，而 ConfigMap 则用于存储配置数据，并在需要时将其应用到 Kubernetes 对象中。It is the parameter input during the Helm rendering phase.
+### Differences Between values.yaml and ConfigMap
+Although both `values.yaml` and ConfigMap are used for configuring Kubernetes objects, their purposes and mechanisms differ. `values.yaml` is primarily used to provide dynamic parameter configurations for a Helm Chart, whereas ConfigMap is used to store configuration data and apply it to Kubernetes objects when needed. It is the parameter input during the Helm rendering phase.
 
 ### What is a ConfigMap?
 It is an object actually created in Kubernetes, used to store configuration data.
