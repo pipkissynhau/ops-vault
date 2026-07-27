@@ -1,11 +1,12 @@
-### 5. 一句话理解回切
-> **回切负责在迁移失败时，迅速将业务恢复到源端运行状态。**
+### 5. Understanding Rollback in One Sentence
+> Rollback is responsible for quickly restoring business operations to the source environment in the event of a migration failure.
 
 ---
 
-## 八、总结
+## 8. Summary
 
-云迁移是一个复杂的过程，涉及到多个关键环节和方法论。通过梳理全量同步、增量同步、割接、校验和回切这几个核心步骤，我们可以确保迁移项目的顺利进行，并降低潜在风险。在实际操作中，需要根据具体的迁移目标和环境，灵活运用这些方法论，以确保业务的高效、安全和稳定迁移。The source side must not be completely destroyed or become unrecoverable before the switch.  
+Cloud migration is a complex process involving multiple key phases and methodologies. By梳理 the core steps of full synchronization, incremental synchronization, cutover, validation, and rollback, we can ensure the smooth progress of migration projects and reduce potential risks. In practice, these methodologies need to be flexibly applied based on specific migration objectives and environments to ensure efficient, secure, and stable business migration.
+The source side must not be completely destroyed or become unrecoverable before the switch.  
 Typically, it is necessary to:  
 - Retain the original instance;  
 - Keep the original database;  

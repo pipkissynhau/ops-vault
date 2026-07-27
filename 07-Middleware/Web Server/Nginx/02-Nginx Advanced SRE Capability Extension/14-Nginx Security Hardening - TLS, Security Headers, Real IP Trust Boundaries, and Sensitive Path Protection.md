@@ -4,9 +4,9 @@ ssl_protocols TLSv1.0 TLSv1.1;
 
 ---
 
-## 场景11：强制使用TLS 1.2或更高版本
+## Scenario 11 - Enforce TLS 1.2 or Higher
 
-配置：
+Configuration:
 
 ```nginx
 ssl_certificate_key /etc/nginx/certs/default/privkey.pem;
@@ -14,33 +14,33 @@ ssl_certificate /etc/nginx/certs/default/fullchain.pem;
 ssl_protocols TLSv1.2 TLSv1.3;
 ```
 
-说明：
+Description:
 
 ```text
-强制客户端使用TLS 1.2或更高版本进行连接
+Force clients to use TLS 1.2 or higher for connections.
 ```
 
 ---
 
-## 场景12：禁止TLS 1.1及更低版本
+## Scenario 12 - Disable TLS 1.1 and Lower
 
-配置：
+Configuration:
 
 ```nginx
 ssl_protocols TLSv1.0 TLSv1.1;
 ```
 
-注意：
+Note:
 
 ```text
-禁用TLS 1.1及更低版本可能会影响兼容性
+Disabling TLS 1.1 and lower may affect compatibility.
 ```
 
 ---
 
-## 八、HTTPS强制跳转
+## 8. HTTPS Force Redirect
 
-如果Nginx配置为HTTP服务器，可以通过以下配置强制访问者切换到HTTPS：
+If Nginx is configured as an HTTP server, the following configuration can be used to force visitors to switch to HTTPS:
 
 ```nginx
 location / {
@@ -48,7 +48,7 @@ location / {
 }
 ```
 
-或：
+Or:
 
 ```nginx
 server {
@@ -59,13 +59,13 @@ server {
 }
 ```
 
-验证：
+Verification:
 
 ```bash
 curl -I http://127.0.0.1
 ```
 
-或：
+Or：
 
 ```bash
 curl -v -H "Host: example.com" http://127.0.0.1
@@ -73,11 +73,11 @@ curl -v -H "Host: example.com" http://127.0.0.1
 
 ---
 
-## 九、HSTS配置
+## 9. HSTS Configuration
 
-HSTS（HTTP Strict Transport Security）是一种增强安全性的机制，可以防止重定向攻击和缓存污染。
+HSTS (HTTP Strict Transport Security) is a security-enhancing mechanism that helps prevent redirect attacks and cache pollution.
 
-配置示例：
+Configuration example：
 
 ```nginx
 http {
@@ -86,25 +86,25 @@ http {
 }
 ```
 
-说明：
+Description：
 
 ```text
-设置HSTS头，指定最大有效期为3600秒，在子域名下为1800秒
+Set the HSTS header with a maximum validity period of 3600 seconds, and 1800 seconds for subdomains.
 ```
 
 ---
 
-## 十、常见安全响应头
+## 10. Common Security Headers
 
-一些常见的安全响应头包括：
+Some common security headers include:
 
-- `Content-Security-Policy`：用于控制资源的安全性
-- `X-Frame-Options`：防止跨站框架攻击
-- `Referrer-Policy`：限制引用来源
-- `Access-Control-Allow-Origin`：允许访问的域名
-- `Access-Control-Allow-Headers`：允许携带的请求头字段
+- `Content-Security-Policy`: used to control resource security
+- `X-Frame-Options`: prevents cross-site framing attacks
+- `Referrer-Policy`: restricts referrer information
+- `Access-Control-Allow-Origin`: specifies allowed domains for access
+- `Access-Control-Allow-Headers`: specifies allowed request header fields
 
-配置示例：
+Configuration example:
 
 ```nginx
 http {
@@ -113,19 +113,19 @@ http {
 }
 ```
 
-说明：
+Description：
 
 ```text
-设置Content-Security-Policy头，禁止跨站框架攻击；设置X-Frame-Options头，限制跨站框架的使用
+Set the Content-Security-Policy header to prevent cross-site framing attacks; set the X-Frame-Options header to restrict the use of cross-site framing.
 ```
 
 ---
 
-## 十一、CSP基础
+## 11. CSP Basics
 
-CSP（Content Security Policy）是一种用于控制资源安全性的策略。
+CSP (Content Security Policy) is a policy used to control resource security.
 
-配置示例：
+Configuration example:
 
 ```nginx
 http {
@@ -134,19 +134,19 @@ http {
 }
 ```
 
-说明：
+Description：
 
 ```text
-设置Content-Security-Policy头，禁止跨站框架攻击；允许从https://example.com访问资源
+Set the Content-Security-Policy header to prevent cross-site framing attacks; allow resources to be loaded from https://example.com.
 ```
 
 ---
 
-## 十二、防止敏感文件暴露
+## 12. Preventing Exposure of Sensitive Files
 
-可以通过配置文件权限和正则表达式匹配来防止敏感文件被公开访问。
+Sensitive files can be protected from public access by configuring file permissions and using regular expression matching.
 
-例如，禁止访问`.git`、`.env`文件：
+For example, to block access to `.git` and `.env` files:
 
 ```nginx
 http {
@@ -156,7 +156,7 @@ http {
 }
 ```
 
-或：
+Or：
 
 ```nginx
 location /git {
@@ -164,19 +164,19 @@ location /git {
 }
 ```
 
-说明：
+Description：
 
 ```text
-使用deny all和allow only root禁止所有用户访问.git和.env文件；通过location /git配置，专门阻止对/git目录的访问
+Use "deny all" and "allow only root" to block all users from accessing .git and .env files; configure location /git to specifically block access to the /git directory.
 ```
 
 ---
 
-## 十三、禁止访问`.git`、`.env`、备份文件
+## 13. Blocking Access to .git, .env, and Backup Files
 
-除了上述配置，还可以进一步禁止访问其他敏感文件，如备份文件。
+In addition to the above configuration, access to other sensitive files such as backup files can also be blocked.
 
-例如：
+For example:
 
 ```nginx
 http {
@@ -186,7 +186,7 @@ http {
 }
 ```
 
-或：
+Or：
 
 ```nginx
 location /backup {
@@ -194,19 +194,19 @@ location /backup {
 }
 ```
 
-说明：
+Description：
 
 ```text
-使用deny all和allow only root禁止所有用户访问.backup文件；通过location /backup配置，专门阻止对/backup目录的访问
+Use "deny all" and "allow only root" to block all users from accessing .backup files; configure location /backup to specifically block access to the /backup directory.
 ```
 
 ---
 
-## 十四、真实IP信任边界
+## 14. Real IP Trust Boundary
 
-为了确保只有真实的IP地址能够访问服务器，可以通过设置`set_real_ip_from`参数来实现。
+To ensure that only genuine IP addresses can access the server, the `set_real_ip_from` parameter can be configured.
 
-配置示例：
+Configuration example:
 
 ```nginx
 http {
@@ -214,19 +214,19 @@ http {
 }
 ```
 
-说明：
+Description：
 
 ```text
-设置set_real_ip_from参数为127.0.0.1，确保只有本地IP地址能够访问服务器
+Set the set_real_ip_from parameter to 127.0.0.1 to ensure that only the local IP address can access the server.
 ```
 
 ---
 
-## 十五、管理后台访问控制
+## 15. Admin Backend Access Control
 
-为了增加管理后台的安全性，可以通过配置基本认证或使用HTTPS来保护访问。
+To enhance the security of the admin backend, access can be protected by configuring basic authentication or using HTTPS.
 
-例如，配置基本认证：
+For example, configuring basic authentication:
 
 ```nginx
 http {

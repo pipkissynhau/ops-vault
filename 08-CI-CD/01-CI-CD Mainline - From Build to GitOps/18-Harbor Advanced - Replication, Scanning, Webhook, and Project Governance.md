@@ -1,4 +1,4 @@
-Scanning is crucial because it helps identify potential security vulnerabilities in images, ensuring that only secure versions are deployed in production environments.Because images are not neutral files; they will ultimately be deployed in a cluster.  
+Scanning is crucial because it helps identify potential security vulnerabilities in images, ensuring that only secure versions are deployed in production environments. Because images are not neutral files; they will ultimately be deployed in a cluster.  
 If the base image has critical vulnerabilities, or if certain software package versions pose known risks, you should at least be aware of this.
 
 ### Key Understanding for This Step
