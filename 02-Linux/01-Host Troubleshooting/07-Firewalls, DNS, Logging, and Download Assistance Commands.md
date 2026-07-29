@@ -245,6 +245,7 @@ To view rules for a specific zone:
 
 ```bash
 firewall-cmd --Do not execute it casually in a production environment.
+```
 
 ---
 
@@ -859,12 +860,13 @@ journalctl -u nginx
 View the last 100 lines:
 
 ```bash
-journalctl -u nginx -nscp root@10.0.0.10:/var/log/messages /tmp/```bash
+journalctl -u nginx -nscp root@10.0.0.10:/var/log/messages /tmp/
 firewall-cmd --list-services
-```→ Download tools or installation packages
+→ Download tools or installation packages
 
 scp / rsync
 → Transfer logs and configuration files
 
 tar / zip
 → Package troubleshooting materials
+```

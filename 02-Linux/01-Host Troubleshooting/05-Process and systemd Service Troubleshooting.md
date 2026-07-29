@@ -226,7 +226,9 @@ To view more results:
 ps -eo pid,ppid,user,cmd,%mem→ Multithreading
 
 +
-→ Foreground Process Group## Section 14: journalctl: Viewing Service Logs
+→ Foreground Process Group
+```
+## Section 14: journalctl: Viewing Service Logs
 
 ---
 
@@ -532,7 +534,6 @@ systemctl status nginx
 journalctl -u nginx -n 100
 ```
 
-```bash
 journalIf a service is managed by systemd, it is not recommended to directly terminate the process and then start it manually. Instead, the following approach is advised:
 
 ```bash

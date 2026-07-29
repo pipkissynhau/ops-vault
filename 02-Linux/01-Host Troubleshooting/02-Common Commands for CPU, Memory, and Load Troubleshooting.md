@@ -163,6 +163,7 @@ High load can be caused by:
 
 - Heavy computational tasks.
 - Disk I/O delays.
--🔤 Compared to the instantaneous results provided by `ps`, `pidstat` is more suitable for observing the trend of a process's CPU usage over a period of time.```bash
+- Compared to the instantaneous results provided by `ps`, `pidstat` is more suitable for observing the trend of a process's CPU usage over a period of time.
+```bash
 vmstat 1 5
 ```

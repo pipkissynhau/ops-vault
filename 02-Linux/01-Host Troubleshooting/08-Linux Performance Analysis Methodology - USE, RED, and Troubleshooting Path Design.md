@@ -108,7 +108,7 @@ Examining only one machine or service.
 Considering only application logs.
 Listening only to user descriptions.
 Making judgments based on experience alone.
-``
+```
 
 Instead, combine the following aspects:
 
@@ -155,9 +155,13 @@ Nginx 502 errors.
 High load values.
 → It could be related to disk I/O or NFS latency.
 Container Out-of-Memory errors.
+```
+
 ```bash
 wc -l /var/log/nginx/access.log
-``````bash
+```
+
+```bash
 uptime
 ```
 
@@ -338,11 +342,11 @@ Check if the local machine is listening on that port.
 Commands:
 
 ```bash
-ss -tunlp | grep 端口号
+ss -tunlp | grep <port_number>
 ```
 
 ```bash
-nc -zv -w 2 目标IP 端口号
+nc -zv -w 2 <target_IP> <port_number>
 ```
 
 ```bash
@@ -354,11 +358,11 @@ firewall-cmd --list-all
 ```
 
 ```bash
-ip route get 目标IP
+ip route get <target_IP>
 ```
 
 ```bash
-tcpdump -i any -nn 端口号
+tcpdump -i any -nn <port_number>
 ```
 
 ---
@@ -446,7 +450,10 @@ After identifying resource abnormalities, the next step is usually to locate the
 CPU:
 
 ```bash
-ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%---
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%
+```
+
+---
 
 ## Scenario 40: Recommendations for Fault Troubleshooting Records
 

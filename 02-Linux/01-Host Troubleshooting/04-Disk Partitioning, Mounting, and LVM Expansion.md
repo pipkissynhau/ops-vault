@@ -219,8 +219,10 @@ blkid /dev/sdb1
 
 It displays the following information for block devices:
 
-```/dev/sdb1: UUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" TYPE="xfs"
+```
+/dev/sdb1: UUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" TYPE="xfs"
 It is recommended to prefer using the UUID when writing to `/etc/fstab` rather than directly specifying `/dev/sdb1`.
+```
 
 Reasons:
 
@@ -477,7 +479,8 @@ partprobe /dev/sdb
 
 Or:
 
-```ext4 often involves scaling out logical volume devices.```bash
+```bash
+ext4 often involves scaling out logical volume devices.
 mkfs.xfs /dev/sdb1
 ```
 

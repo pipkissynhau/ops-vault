@@ -209,11 +209,13 @@ Check if it belongs to Docker overlay or the host directory.
 
 ---
 
-## Scenario 3:```bash
+## Scenario 3:
+```bash
 find /var/log -type f -name "*.gz" | wc -l
-``````bash
+
 for dir in /*; do echo "$dir"; find "$dir" -xdev -type f 2>/dev/null | wc -l; done
-```---
+```
+---
 
 ## Tool Installation
 
