@@ -104,7 +104,7 @@ Inappropriate container memory restrictions
 
 Improper JVM heap configuration parameters
 
- 처리 of large queries, objects, or files
+ Processing of large queries, objects, or files
 
 The presence of malfunctioning processes in the system
 ```
@@ -215,7 +215,9 @@ buff/cache
 
 ```text
 ps -eo pid,rss,vsz,cmd --sort=-rss | head -n 20
-```🔤 Translate the following Chinese text into English:
+``` 
+
+Translate the following Chinese text into English:
 
 ```bash
 ps -o pid,rss,vsz,%mem,cmd -p PID
@@ -442,7 +444,11 @@ Commands to clear page cache include:
 sync
 ```
 
-```bashcat /sys/fs/cgroup/memory/memory.failcnt```bash
+```bash
+cat /sys/fs/cgroup/memory/memory.failcnt
+```
+
+```bash
 free -h
 ```
 
@@ -700,4 +706,4 @@ docker inspect container_id
 
 ```bash
 docker inspect container_id | grep -i memory -A 20
-``
+```

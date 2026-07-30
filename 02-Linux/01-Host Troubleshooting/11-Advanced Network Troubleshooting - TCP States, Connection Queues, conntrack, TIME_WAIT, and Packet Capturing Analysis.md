@@ -171,7 +171,8 @@ ss -ant
 ```bash
 ss -ant | awk 'NR>1 {count[$1]++} END {for (state in count) print state, count[state]}```bash
 ss -ant state time-wait | awk 'NR>1 {print $5}' | awk -F: '{print $NF}' | sort | uniq -c | sort -nr | head
-```## X. Exhaustion of Local Temporary Ports
+```
+## X. Exhaustion of Local Temporary Ports
 
 ---
 
@@ -405,7 +406,10 @@ conntrack -L -p tcp | wc -l
 Temporary adjustment:
 
 ```bash
-sysctl -w net.netfilter### Scenario 53: Packet Capture and Judgment for the Four-Way Handshake
+sysctl -w net.netfilter
+```
+
+### Scenario 53: Packet Capture and Judgment for the Four-Way Handshake
 
 The normal four-way handshake process is as follows:
 
@@ -503,13 +507,17 @@ Or for Fedora/RHEL:
 
 ```bash
 dnf install -y ethtool
-```Container port mapping exception
+```
+
+Container port mapping exception
 
 conntrack table is full
 
 Container DNS exception
 
-The service inside the container only listens on 127.0.0.1```bash
+The service inside the container only listens on 127.0.0.1
+
+```bash
 ethtool eth0
 ```
 

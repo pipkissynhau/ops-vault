@@ -254,8 +254,9 @@ Confirm the current host being operated on
 Verify the system version
 
 Check the kernel version
+```
 
-D```markdown
+```markdown
 Is there a large number of abnormal processes reading and writing?
 Are backup tasks consuming all IO resources?
 Is there excessive log output?
@@ -538,7 +539,10 @@ tail -n 100 /var/log/syslog
 Authentication logs:
 
 ```bash
-tail -n 100 /var/log/secure## Scenario 42: Checking Container Status
+tail -n 100 /var/log/secure
+```
+
+## Scenario 42: Checking Container Status
 
 ```bash
 docker ps
@@ -810,6 +814,7 @@ ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%cpu | head -n 10
 echo
 echo "===== Top Memory Processes ====="
 ps -eo pid,pptar czf /tmp/incident-$TS.tar.gz -C /tmp incident-$TS
+```
 
 View:
 

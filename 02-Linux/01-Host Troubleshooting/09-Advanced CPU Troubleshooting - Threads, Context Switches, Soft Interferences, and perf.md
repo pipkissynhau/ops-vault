@@ -124,6 +124,7 @@ High virtualization environment CPU usage
 100% utilization of a single core
 → Either a single-threaded bottleneck or concentrated interrupt activities
 High context## Scenario 15: Identifying High-CPU-Consuming Threads
+```
 
 ```bash
 top -H -p 12345
@@ -684,8 +685,9 @@ docker top Container ID
 ```
 
 ```bash
-docker inspect -f "{{.State.Pid}}' Container ID
+docker inspect -f "{{.State.Pid}}" Container ID
 ```
 
 ```bash
-ps -fp $(
+ps -fp $()
+```
