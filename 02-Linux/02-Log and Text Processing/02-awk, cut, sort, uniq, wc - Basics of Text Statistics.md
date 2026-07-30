@@ -186,7 +186,7 @@ Then, use uniq -c to count the number of occurrences for each group.
 The most common statistical routine is:
 
 ```bash
-awk '{print 某列}' file | sort | uniq -c | sort -nr | head
+awk '{print <column>}' file | sort | uniq -c | sort -nr | head
 ```
 
 Meaning:
@@ -211,9 +211,13 @@ Counting the most frequently visited IPs
 Identifying the most common URLs
 Analyzing HTTP status codes distribution
 Determining the error keywords with the highest frequency
-Finding```bash
+Finding
+```
+```bash
 awk '$7 ~ /^\/api/ {print $0}' access.log
-```### Explanation
+```
+
+### Explanation
 
 ```text
 -c
@@ -487,7 +491,10 @@ head -n 5 access.log
 or:
 
 ```bash
-tail -n```bash
+tail -n
+```
+
+```bash
 sort -r file
 ```
 
@@ -553,7 +560,7 @@ grep "error" app.log | wc -l
 
 ---
 
-## 常用组合
+## Common combinations
 
 ```bash
 awk '{print $1}' access.log | sort | uniq -c | sort -nr | head
@@ -581,73 +588,73 @@ awk '$1 == "10.0.0.5" {print $9}' access.log | sort | uniq -c | sort -nr
 
 ---
 
-## 二十、一句话总结
+## 20. One-sentence summary
 
-awk、cut、sort、uniq、wc 的核心分工是：
+awk、cut、sort、uniq、wc Core responsibility is：
 
 ```text
 awk
-→ 复杂字段提取、条件过滤、统计计算
+→ Complex field extraction, conditional filtering, statistical calculation
 
 cut
-→ 简单固定分隔符切列
+→ Simple fixed-delimiter column splitting
 
 sort
-→ 排序
+→ Sorting
 
 uniq
-→ 去重和统计重复
+→ Deduplication and duplicate counting
 
 wc
-→ 计数
+→ Counting
 ```
 
-日志统计的核心套路是：
+The core routine of log statistics is：
 
 ```text
-先提取字段
+First extract fields
 
-→ 再排序
+→ Then sort
 
-→ 再去重统计
+→ Then deduplicate and count
 
-→ 再倒序
+→ Then reverse order
 
-→ 最后取 TopN
+→ Finally take TopN
 ```
 
-最常用组合：
+Most common combinations：
 
 ```bash
-awk '{print 某列}' file | sort | uniq -c | sort -nr | head
+awk '{print <column>}' file | sort | uniq -c | sort -nr | head
 ```
 
-常见场景：
+Common scenarios：
 
 ```text
-统计访问最多 IP
+Count the most frequently accessed IPs 
+ 
+Count the distribution of status codes  
 
-统计状态码分布
+Count the most frequently accessed URLs  
 
-统计访问最多 URL
-
-统计某个 IP 请求状态码分布
-
-统计某个关键字段出现次数
+Count the distribution of status codes for a specific IP's requests 
+ 
+Count the occurrences of a specific key field
 ```
 
-生产建议：
+Production recommendations：
 
 ```text
-统计前先确认日志字段位置
+Before counting, first confirm the log field positions  
 
-uniq 前通常要先 sort
+uniq usually requires sort first  
 
-复杂分隔符优先用 awk
+For complex delimiters, prefer awk  
 
-简单固定分隔符可以用 cut
+For simple fixed delimiters, you can use cut  
 
-统计结果要结合时间范围
+Counting results should be considered together with the time range  
 
-不要在不了解日志格式时直接套字段编号
+Do not directly apply field numbers without understanding the log format
 ```

@@ -229,7 +229,7 @@ This is useful for:
 ```text
 Checking recent service errors
 Viewing logs immediately after a service## Scenario 14: Using Extended Regular Expressions to Match Multiple Keywords
-
+```
 ### Command
 
 ```bash
@@ -453,7 +453,8 @@ grep -i "error" app.log | tail -n 50
 
 ### Idea
 
-```text- First identify all occurrences of "error"
+```text
+- First identify all occurrences of "error"
 - Then display the last 50 lines
 ```
 
@@ -469,10 +470,14 @@ tail -f app.log | grep -Ei "error|timeout"
 
 ### Application Scenarios
 
-```text- Monitoring during releases
+```text
+- Monitoring during releases
 - Observing after service restarts
 - Checking during API load testing
-- Reviewing## Basic grep Filtering
+- Reviewing
+```
+
+## Basic grep Filtering
 
 ```bash
 grep "timeout" app.log
