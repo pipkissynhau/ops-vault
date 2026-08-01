@@ -728,5 +728,5 @@ You must first solidify this article.
 ## Next Day Recommendation  
 Next article recommendation:  
 
-[[Stateful Application Deployment Overview - StatefulSet, Headless Service, and Persistence Strategy]]  
+[[02-Stateful Application Deployment Overview - StatefulSet, Headless Service, and Persistence Strategy]]  
  /think

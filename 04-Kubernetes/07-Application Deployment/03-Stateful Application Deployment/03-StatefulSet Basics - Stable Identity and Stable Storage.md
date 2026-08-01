@@ -794,4 +794,4 @@ This is the most critical mindset shift in StatefulSet learning.
 ## Next Day Recommendation
 Next article suggestion: organize
 
-[[Headless Service Basics - Stateful Service Discovery Getting Started]]
+[[04-Headless Service Basics - Stateful Service Discovery Getting Started]]

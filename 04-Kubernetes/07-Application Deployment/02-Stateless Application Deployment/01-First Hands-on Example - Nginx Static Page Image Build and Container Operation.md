@@ -511,4 +511,4 @@ Therefore, clarifying this simplest practical exercise first is more effective t
 ## Next Day Suggestions
 Next post suggestion to organize:
 
-[[Static Page Integration with Kubernetes - Deployment and Service Fundamentals]]
+[[02-Static Page Integration with Kubernetes - Deployment and Service Fundamentals]]

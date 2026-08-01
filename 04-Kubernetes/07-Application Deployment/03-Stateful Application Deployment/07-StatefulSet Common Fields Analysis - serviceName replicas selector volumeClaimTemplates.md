@@ -891,4 +891,4 @@ Once this foundation is established, when you later look at deployment methods f
 ## Tomorrow's Recommendation
 Next article recommendation:  
 
-[[Service Discovery Design for Stateful Applications - Headless Service DNS Member Access Methods]]
+[[08-Service Discovery Design for Stateful Applications - Headless Service DNS Member Access Methods]]

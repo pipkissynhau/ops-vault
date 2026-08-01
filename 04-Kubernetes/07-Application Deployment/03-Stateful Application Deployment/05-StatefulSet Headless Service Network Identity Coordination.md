@@ -817,4 +817,4 @@ This step is critical for understanding how databases, middleware, registry cent
 ## Next Day Recommendation
 Next post suggestion: 
 
-[[Stateful Application Deployment Design - Identity Storage Service Discovery Startup Order]]
+[[06-Stateful Application Deployment Design - Identity Storage Service Discovery Startup Order]]

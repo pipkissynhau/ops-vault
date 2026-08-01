@@ -914,4 +914,4 @@ Therefore, although this section is about basic health checks, it's actually a k
 ## Next Day Suggestions
 Next post suggestion: organize
 
-[[Startup Probe Basics and Slow Startup Application Scenarios]]
+[[02-Startup Probe Basics and Slow Startup Application Scenarios]]

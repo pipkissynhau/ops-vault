@@ -645,5 +645,5 @@ This is also a necessary resource perspective you must have when entering applic
 ## Next Day Suggestions
 Next article suggests organizing:
 
-[[Resource Requests Impact on Pod Scheduling - From Pending to Scheduling Decision]]
+[[02-Resource Requests Impact on Pod Scheduling - From Pending to Scheduling Decision]]
  /think
