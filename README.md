@@ -5,7 +5,3 @@
 ---
 
 A personal knowledge library.
-
-TODO: 
-- fix links
-- unify terminology
