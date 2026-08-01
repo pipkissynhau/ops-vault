@@ -1,6 +1,6 @@
 # 10-Dockerfile Basics: Image Building and Best Practices
 
-# Docker # Dockerfile # Image Building # Containerization # Image Optimization # CI-CD # Operations # Security
+#Docker #Dockerfile #MirrorBuild #Containerization #MirrorOptimization #CI-CD #Transport #Clear.
 
 ---
 
@@ -10,14 +10,14 @@
 
 ---
 
-## I. Document Description
+## I. Document Overview
 
-This document outlines the basic syntax, common commands, image building process, and best practices for Dockerfiles, focusing on:
+This document organizes the basic syntax of Dockerfile, common instructions, image building process, and production practices, with focus on:
 
-- What a Dockerfile is
-- The difference between Dockerfiles and `docker commit`
-- The basic structure of a Dockerfile
-- Common Dockerfile commands
+- What is Dockerfile
+- Difference between Dockerfile and `docker commit`
+- Basic structure of Dockerfile
+- Common Dockerfile instructions
 - `FROM`
 - `FROM ... AS ...`
 - `RUN`
@@ -38,59 +38,59 @@ This document outlines the basic syntax, common commands, image building process
 - Image layering and caching
 - Multi-stage building
 - Common Dockerfile issues
-- Best practices for production environments
+- Production best practices
 
 The goal is:
 
-To understand Dockerfiles
+Can understand Dockerfile
 
-→ Be able to write basic Dockerfiles
+→ Can write basic Dockerfile
 
-→ Build images
+→ Can build images
 
-→ Comprehend image layering and caching
+→ Can understand image layering and caching
 
-→ Understand multi-stage building with `FROM ... AS ...`
+→ Can understand `FROM ... AS ...` multi-stage building
 
-→ Reduce image size
+→ Can reduce image size
 
-→ Avoid including sensitive information in images
+→ Can avoid writing sensitive information into images
 
-→ Lay a foundation for subsequent CI/CD image builds
+→ Can lay foundation for subsequent CI/CD image building
 
 ---
 
-## II. What is a Dockerfile
+## II. What is Dockerfile
 
-A Dockerfile is a text file that describes how to build an image.
+Dockerfile is a text file that describes how to build an image.
 
-It can be thought of as:
+It can be understood as:
 
 ```text
-Dockerfile = An instruction manual for building images
+Dockerfile = Mirror construction instructions
 ```
 
-Manual approach:
+Manual way:
 
 ```text
-Enter the container
+Enter the container.
 → Install software
-→ Modify configurations
-→ Use docker commit to save the image
+→ Modify Configuration
+→ docker commit Save mirror
 ```
 
-Dockerfile approach:
+Dockerfile way:
 
 ```text
-Write installation steps, configuration copying, and startup commands in a file
-→ Use docker build to automatically build the image
+Write installation steps, configuration copy, start-up commands into files
+→ docker build Autobuild mirrors
 ```
 
-For production environments, Dockerfiles are more recommended over long-term reliance on `docker commit`.
+Production environment recommends Dockerfile rather than long-term dependency on `docker commit`.
 
 ---
 
-## III. The Difference between Dockerfiles and docker commit
+## III. Difference between Dockerfile and docker commit
 
 ---
 
@@ -99,16 +99,16 @@ For production environments, Dockerfiles are more recommended over long-term rel
 Example:
 
 ```bash
-docker commit containerID my-nginx:v1
+docker commit ContainersID my-nginx:v1
 ```
 
-Characteristics:
+Features:
 
-- Suitable for temporary saving of work in progress
-- Opacity during the process
-- Inconvenient for review
-- Difficult to manage versions
-- Not suitable for long-term production use
+- Suitable for temporarily saving state
+- Opaque operation process
+- Not convenient for review
+- Not convenient for version management
+- Not suitable for long-term production delivery
 
 ---
 
@@ -124,42 +124,42 @@ COPY ./html /usr/share/nginx/html
 EXPOSE 80
 ```
 
-Building:
+Build:
 
 ```bash
 docker build -t my-nginx:v1 .
 ```
 
-Characteristics:
+Features:
 
 - Clear building process
-- Support for version management
-- Facilitates code review
-- Compatible with CI/CD pipelines
-- More suitable for teamwork and production use
+- Can be version managed
+- Can be code-reviewed
+- Can integrate with CI/CD
+- More suitable for team collaboration and production delivery
 
 ---
 
-## 3. In one sentence
+## 3. One-sentence Understanding
 
 ```text
 docker commit
-→ Temporarily saves container state
+→ Interim storage container state
 
 Dockerfile
-→ Standardizes image building processes
+→ Standardised build mirrors
 ```
 
 Production recommendation:
 
 ```text
-Use docker commit for temporary troubleshooting
-Opt for Dockerfiles for official image builds
+The temporary barrier is working. docker commit
+Official mirror construction priority Dockerfile
 ```
 
 ---
 
-## IV. The Basic Structure of a Dockerfile
+## IV. Basic Structure of Dockerfile
 
 A simple Dockerfile example:
 
@@ -173,25 +173,25 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-The basic structure can be understood as:
+Basic structure can be understood as:
 
 ```text
-Select a base image
-→ Install dependencies
-→ Copy files
-→ Set the working directory
-→ Configure environment variables
-→ Expose ports
-→ Specify the startup command
+Select Basic Mirror
+→ Installation Dependence
+→ Copy File
+→ Set Task Directory
+→ Set Environmental Variables
+→ Exposure Port
+→ Specify start-up command
 ```
 
 ---
 
-## V. Common Dockerfile Commands
+## V. Common Dockerfile Instructions
 
 ---
 
-## Scenario 1: Using FROM to specify a base image
+## Scenario 1: FROM to specify base image
 
 ### Example
 
@@ -201,11 +201,11 @@ FROM nginx:latest
 
 ### Meaning
 
-`FROM` is used to designate the base image for the build.
+`FROM` is used to specify the base image.
 
-Dockerfiles always start with `FROM`.
+Dockerfile usually must start with `FROM`.
 
-Common base images include:
+Common base images:
 
 ```text
 nginx
@@ -234,13 +234,13 @@ FROM openjdk:17-jdk
 
 ### Production Recommendation
 
-It is not recommended to use `latest` indefinitely:
+Not recommended for long-term use:
 
 ```dockerfile
 FROM nginx:latest
 ```
 
-Instead, it is better to specify a fixed version:
+More recommended to fix version:
 
 ```dockerfile
 FROM nginx:1.27
@@ -248,14 +248,14 @@ FROM nginx:1.27
 
 Reasons:
 
-- `latest` versions are unstable
-- The resulting image may change over time
-- It makes rolling back difficult
-- It can complicate issue reproduction
+- `latest` is unstable
+- Subsequent build results may vary
+- Not conducive to rollback
+- Not conducive to problem reproduction
 
 ---
 
-## Scenario 2: Using FROM AS for stage naming
+## Scenario 2: FROM AS stage naming
 
 ### Example
 
@@ -263,56 +263,373 @@ Reasons:
 FROM golang:1.23 AS builder
 ```
 
-###### Copy Files Using `COPY`
+### Meaning
 
-`COPY` is used to copy files from the build context into the image.
+`AS` is used to give a name to the current build stage.
 
-**Common Uses:**
-- Copying application code
-- Copying configuration files
-- Copying static resources
-- Copying startup scripts
+Note:
 
-**Examples:**
+```text
+AS Not alone. Dockerfile Command
+AS Yes. FROM Phase aliases in command
+```
+
+Full format:
+
+```dockerfile
+FROM Basic mirror AS Phase Name
+```
+
+Example:
+
+```dockerfile
+FROM golang:1.23 AS builder
+```
+
+Means:
+
+```text
+Use golang:1.23 As basic mirror
+and name this build phase as builder
+```
+
+---
+
+## Scenario 3: Why need FROM AS
+
+In multi-stage building, there are usually multiple `FROM`.
+
+Example:
+
+```dockerfile
+FROM golang:1.23 AS builder
+
+WORKDIR /src
+
+COPY . .
+
+RUN go build -o app main.go
+
+
+FROM alpine:3.20
+
+WORKDIR /app
+
+COPY --from=builder /src/app /app/app
+
+CMD ["/app/app"]
+```
+
+Here are two stages:
+
+```text
+Phase I:builder
+→ Responsible for source code compilation
+
+Phase II:alpine
+→ Save final running file only
+```
+
+Key line is this one:
+
+```dockerfile
+COPY --from=builder /src/app /app/app
+```
+
+Means:
+
+```text
+From builder Phase Copy /src/app
+to the current stage /app/app
+```
+
+---
+
+## Scenario 4: Common AS naming
+
+Common stage names:
+
+```text
+builder
+build
+deps
+runtime
+base
+test
+prod
+```
+
+Example:
+
+```dockerfile
+FROM node:20 AS deps
+```
+
+```dockerfile
+FROM node:20 AS builder
+```
+
+```dockerfile
+FROM nginx:1.27 AS runtime
+```
+
+### Naming Recommendation
+
+Stage names should reflect their purpose.
+
+Example:
+
+```text
+deps
+→ Reliance on installation phase
+
+builder
+→ Compile build phase
+
+runtime
+→ Final operational phase
+
+test
+→ Test phase
+
+prod
+→ Production mirror phase
+```
+
+---
+
+## Scenario 5: Can we skip using AS?
+
+Yes, but not recommended.
+
+Without stage names, we can reference by stage number.
+
+Example:
+
+```dockerfile
+FROM golang:1.23
+
+WORKDIR /src
+
+COPY . .
+
+RUN go build -o app main.go
+
+
+FROM alpine:3.20
+
+WORKDIR /app
+
+COPY --from=0 /src/app /app/app
+
+CMD ["/app/app"]
+```
+
+Here:
+
+```dockerfile
+COPY --from=0 /src/app /app/app
+```
+
+Means copy files from the 0th build stage.
+
+But this writing style has poor readability.
+
+More recommended:
+
+```dockerfile
+FROM golang:1.23 AS builder
+```
+
+Then:
+
+```dockerfile
+COPY --from=builder /src/app /app/app
+```
+
+---
+
+## Scenario 6: Core role of AS
+
+```text
+AS Role of:
+Name for build phase
+
+COPY --from=Phase name:
+Copy files from specified stage
+```
+
+Common combinations:
+
+```dockerfile
+FROM golang:1.23 AS builder
+```
+
+```dockerfile
+COPY --from=builder /src/app /app/app
+```
+
+### One-sentence Understanding AS
+
+```text
+AS builder
+→ Name the current construction phase builder
+
+COPY --from=builder
+→ From builder Get the files.
+```
+
+Core value of multi-stage building is:
+
+```text
+Retain compilation tools and source code for build phase
+Only final products are retained during the operation phase
+
+→ The mirror is smaller.
+→ The attack is smaller.
+→ The production environment is cleaner.
+```
+
+---
+
+## Scenario 7: RUN to execute build commands
+
+### Example
+
+```dockerfile
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y curl
+```
+
+### Meaning
+
+`RUN` is used to execute commands during image building.
+
+Common uses:
+
+- Install software packages
+- Create directories
+- Modify configurations
+- Download dependencies
+- Clean cache
+
+---
+
+## Scenario 8: Merge multiple RUN commands
+
+Not recommended:
+
+```dockerfile
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install -y vim
+```
+
+More recommended:
+
+```dockerfile
+RUN apt-get update \
+    && apt-get install -y curl vim \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+### Explanation
+
+Benefits of merging `RUN`:
+
+- Reduce image layers
+- Reduce intermediate caching
+- Reduce image size
+- Avoid apt cache residue
+
+---
+
+## Scenario 9: COPY to copy files
+
+### Example
+
+```dockerfile
+COPY ./html /usr/share/nginx/html
+```
+
+### Meaning
+
+`COPY` is used to copy files from the build context to the image.
+
+Common uses:
+
+- Copy application code
+- Copy configuration files
+- Copy static resources
+- Copy startup scripts
+
+### Example
+
 ```dockerfile
 COPY nginx.conf /etc/nginx/nginx.conf
+```
+
+```dockerfile
 COPY app.jar /app/app.jar
 ```
 
 ---
 
-## Scenario 10: Using `ADD` to Copy Files or Auto-Unzip Them
+## Scenario 10: ADD to copy files or auto-unpack
 
-**Example:**
+### Example
+
 ```dockerfile
 ADD app.tar.gz /app/
 ```
 
-**Meaning:**
-`ADD` can also be used to copy files, but it offers additional features:
-- It can automatically unzip local tar packages.
-- It can add files from a URL.
+### Meaning
 
-**Production Recommendation:**
-Generally, `COPY` should be preferred. Use `ADD` only when you need to automatically unzip tar packages.
+`ADD` can also copy files, but has more capabilities than `COPY`:
 
-**Reason:**
-- `COPY` has clearer semantics.
-- `ADD` performs more actions and may lead to misunderstandings.
+- Can auto-unpack local tar packages
+- Can add files from URLs
+
+### Production Recommendation
+
+Generally prefer using:
+
+```dockerfile
+COPY
+```
+
+Only consider using:
+
+```dockerfile
+ADD
+```
+
+when absolutely needed to auto-unpack tar packages.
+
+Reasons:
+
+```text
+COPY More semantic.
+ADD More behavior, more misunderstanding.
+```
 
 ---
 
-## Scenario 11: Using `WORKDIR` to Set the Working Directory
+## Scenario 11: WORKDIR Set Working Directory
 
-**Example:**
+### Example
+
 ```dockerfile
 WORKDIR /app
 ```
 
-**Meaning:**
+### Meaning
+
 `WORKDIR` is used to set the working directory for subsequent commands.
 
-**Example Usage:**
+Example:
+
 ```dockerfile
 FROM ubuntu:22.04
 
@@ -325,23 +642,31 @@ RUN chmod +x app.sh
 CMD ["./app.sh"]
 ```
 
-**Equivalence:**
-Subsequent `COPY`, `RUN`, `CMD`, and other operations will use `/app` as the current working directory by default.
+Equivalent understanding:
+
+```text
+Follow-up COPYI don't know.RUNI don't know.CMD Waiting for the default to /app As Current Directory
+```
 
 ---
 
-## Scenario 12: Using `ENV` to Set Environment Variables
+## Scenario 12: ENV Set Environment Variables
 
-**Example:**
+### Example
+
 ```dockerfile
 ENV APP_ENV=prod
 ENV TZ=Asia/Shanghai
 ```
 
-**Meaning:**
-`ENV` is used to set environment variables inside the image. These variables can also be read by containers after they start.
+### Meaning
 
-**Example Usage:**
+`ENV` is used to set environment variables in the image.
+
+These variables can be read after the container runs.
+
+Example:
+
 ```dockerfile
 FROM nginx:1.27
 
@@ -349,41 +674,61 @@ ENV APP_ENV=prod
 ENV TZ=Asia/Shanghai
 ```
 
-**Note:**
-It's not recommended to include sensitive information in `ENV` files:
-- Such information will be included in the image’s history.
-- It may be visible when using `docker inspect`.
-- Sensitive data can easily be leaked if the image is distributed.
+### Note
 
-Sensitive information is better passed through other methods, such as:
+Avoid putting sensitive information into `ENV`:
 
-- `-e` option when running a container
-- Docker Compose environment files
-- Kubernetes Secrets
-- CI/CD Secrets
+```dockerfile
+ENV DB_PASSWORD=123456
+```
+
+Reasons:
+
+- Will enter the image history
+- May be seen by `docker inspect`
+- Easy to leak after image distribution
+
+Sensitive information is better passed through:
+
+```text
+docker run -e
+Docker Compose env_file
+Kubernetes Secret
+CI/CD Secret
+```
 
 ---
 
-## Scenario 13: Using `ARG` to Set Build Parameters
+## Scenario 13: ARG Set Build Arguments
 
-**Example:**
+### Example
+
 ```dockerfile
 ARG APP_VERSION=1.0.0
 ```
 
-**Usage During Building:**
+Pass arguments during build:
+
 ```bash
 docker build --build-arg APP_VERSION=1.0.1 -t myapp:1.0.1 .
 ```
 
-**Meaning:**
-`ARG` is a parameter used during the image building process.
+### Meaning
 
-**Difference from `ENV`:**
-- `ARG` is only used when building the image.
-- `ENV` exists both during and after the image is built.
+`ARG` is a build-time parameter.
 
-**Example:**
+Difference from `ENV`:
+
+```text
+ARG
+→ Use to build mirrors
+
+ENV
+→ When the mirror is built, the container also exists when running.
+```
+
+### Example
+
 ```dockerfile
 FROM alpine:3.20
 
@@ -392,70 +737,356 @@ ARG APP_VERSION=1.0.0
 RUN echo "build version: ${APP_VERSION}"
 ```
 
-**Building Command:**
+Build:
+
 ```bash
 docker build --build-arg APP_VERSION=2.0.0 -t test:v2 .
 ```
 
 ---
 
-## Scenario 14: Using `EXPOSE` to Declare Ports
+## Scenario 14: EXPOSE Declare Ports
 
-**Example:**
+### Example
+
 ```dockerfile
 EXPOSE 80
 ```
 
-**Meaning:**
-`EXPOSE` is used to specify the ports that services inside the container will listen on.
+### Meaning
 
-**Note:**
-`EXPOSE` only declares the ports; they are not actually published unless explicitly specified when running the container:
+`EXPOSE` is used to declare ports that the service inside the container listens on.
+
+Note:
+
+```text
+EXPOSE It's just a statement. It's not the real publisher. mouth
+```
+
+To actually publish ports, use:
 
 ```bash
 docker run -d -p 8080:80 nginx
 ```
 
-**Understanding:**
-In the Dockerfile:
+during container runtime.
+
+### Understanding
+
+In Dockerfile:
+
 ```dockerfile
 EXPOSE 80
 ```
 
-When running the container:
+When the container runs:
+
 ```bash
 docker run -d -p 8080:80 my-nginx:v1
 ```
 
-Access from the host:
+Access:
+
 ```text
-Host IP:8080
+HostIP:8080
 ```
 
 ---
 
-## Scenario 15: Using `CMD` to Specify the Default Start Command
+## Scenario 15: CMD Specify Default Start Command
 
-**Example:**
+### Example
+
 ```dockerfile
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-**Meaning:**
-`CMD` is used to specify the default command that will be executed when the container starts.
+### Meaning
 
-It's recommended to use a JSON array format:
+`CMD` is used to specify the default command to execute when the container starts.
+
+Recommended to use JSON array format:
 
 ```dockerfile
-CMD ["command", "parameter1", "parameter2"]
+CMD ["Command", "Parameters1", "Parameters2"]
 ```
 
-For example:
+Example:
+
 ```dockerfile
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-The shell format is less recommended because it may lead to unclear signal handlingnode_modules
+Not recommended shell format:
+
+```dockerfile
+CMD nginx -g "daemon off;"
+```
+
+Reasons:
+
+- Signal handling is less clear than exec format
+- PID 1 behavior may not meet expectations
+- Container shutdown may be less graceful
+
+---
+
+## Scenario 16: ENTRYPOINT Specify Entry Command
+
+### Example
+
+```dockerfile
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+
+### Meaning
+
+`ENTRYPOINT` is used to specify the main entry command for the container.
+
+It's more like:
+
+```text
+What are the procedures for this container to be fixed?
+```
+
+Example:
+
+```dockerfile
+FROM openjdk:17-jdk
+
+WORKDIR /app
+
+COPY app.jar /app/app.jar
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+
+---
+
+## Scenario 17: Difference Between CMD and ENTRYPOINT
+
+### CMD Example
+
+```dockerfile
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Can be overridden at runtime:
+
+```bash
+docker run my-nginx:v1 echo hello
+```
+
+### ENTRYPOINT Example
+
+```dockerfile
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+
+At runtime, it's more like a fixed entry.
+
+### Common Combination
+
+```dockerfile
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+CMD ["--spring.profiles.active=prod"]
+```
+
+Understanding:
+
+```text
+ENTRYPOINT
+→ Fixed master command
+
+CMD
+→ Default Parameters
+```
+
+---
+
+## Scenario 18: USER Specify Runtime User
+
+### Example
+
+```dockerfile
+USER nginx
+```
+
+### Meaning
+
+`USER` is used to specify which user the container runs as.
+
+By default, many images run as root.
+
+In production, it's recommended to run as a non-root user.
+
+Example:
+
+```dockerfile
+FROM alpine:3.20
+
+RUN adduser -D appuser
+
+USER appuser
+
+CMD ["sh"]
+```
+
+### Production Recommendation
+
+Avoid long-term root usage for ordinary business containers.
+
+Better to use:
+
+```dockerfile
+RUN adduser -D appuser
+USER appuser
+```
+
+---
+
+## Scenario 19: VOLUME Declare Data Volumes
+
+### Example
+
+```dockerfile
+VOLUME ["/data"]
+```
+
+### Meaning
+
+`VOLUME` is used to declare data directories in the container.
+
+Note:
+
+```text
+VOLUME Just declare a mount point
+```
+
+In actual production, it's more common to explicitly mount volumes when running containers or in Compose/Kubernetes.
+
+Example:
+
+```bash
+docker run -d -v my-volume:/data myapp:v1
+```
+
+---
+
+## Scenario 20: LABEL Add Image Metadata
+
+### Example
+
+```dockerfile
+LABEL maintainer="ops@example.com"
+LABEL app="myapp"
+LABEL version="1.0.0"
+```
+
+### Meaning
+
+`LABEL` is used to add metadata to the image.
+
+Common uses:
+
+- Maintainer information
+- Application name
+- Version information
+- Build source
+- Git commit
+- CI/CD pipeline number
+
+Example:
+
+```dockerfile
+LABEL app="myapp" \
+      version="1.0.0" \
+      description="demo application image"
+```
+
+---
+
+## Scenario 21: HEALTHCHECK Health Check
+
+### Example
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD curl -f http://localhost/ || exit 1
+```
+
+### Meaning
+
+`HEALTHCHECK` is used to tell Docker how to check if the container is healthy.
+
+Common statuses:
+
+```text
+starting
+healthy
+unhealthy
+```
+
+Check container health status:
+
+```bash
+docker ps
+```
+
+View details:
+
+```bash
+docker inspect ContainersID
+```
+
+### Note
+
+The health check command itself requires the corresponding tool in the image.
+
+For example, using:
+
+```bash
+curl
+```
+
+The image must install `curl`.
+
+---
+
+## VI. .dockerignore File
+
+---
+
+## Scenario 22: Why Need .dockerignore
+
+`.dockerignore` is used to exclude files not needed to be sent to Docker build context.
+
+It can be understood as:
+
+```text
+.gitignore Here. Git I used it.
+.dockerignore Here. docker build I used it.
+```
+
+Without `.dockerignore`, many unrelated files may be sent to the build context:
+
+- `.git`
+- Log files
+- Temporary files
+- Local cache
+- node_modules
+- Test files
+- Key files
+- Large files
+
+---
+
+## Scenario 23: .dockerignore Example
+
+```text
+.git
+.gitignore
+node_modules
 dist
 target
 *.log
@@ -463,17 +1094,1069 @@ target
 .env
 .env.*
 id_rsa
-*.pem```bash
+*.pem
+```
+
+### Note
+
+Benefits of `.dockerignore`:
+
+- Reduce build context size
+- Speed up image building
+- Avoid sensitive files entering the image
+- Reduce cache invalidation
+- Lower risk of accidental packaging
+
+---
+
+## VII. Dockerfile Build Image
+
+---
+
+## Scenario 24: Basic Build Command
+
+Dockerfile exists in the current directory:
+
+```bash
+docker build -t myapp:v1 .
+```
+
+Meaning:
+
+```text
+-t myapp:v1
+→ Specify mirror name and tag
+
+.
+→ Current directory as construction context
+```
+
+---
+
+## Scenario 25: Specify Dockerfile File
+
+```bash
+docker build -f Dockerfile.prod -t myapp:prod .
+```
+
+### Note
+
+Suitable for scenarios with multiple Dockerfiles:
+
+```text
+Dockerfile
+Dockerfile.dev
+Dockerfile.prod
+```
+
+---
+
+## Scenario 26: Build Without Cache
+
+```bash
+docker build --no-cache -t myapp:v1 .
+```
+
+### Note
+
+Suitable scenarios:
+
+- Suspect cache causes build issues
+- Dependencies have been updated
+- Need complete rebuild
+- Troubleshoot build process
+
+Not recommended to use `--no-cache` every time, as it would reduce build efficiency.
+
+---
+
+## Scenario 27: Pass ARG During Build
+
+```bash
+docker build --build-arg APP_VERSION=1.0.1 -t myapp:1.0.1 .
+```
+
+Dockerfile Example:
+
+```dockerfile
+FROM alpine:3.20
+
+ARG APP_VERSION=1.0.0
+
+RUN echo "APP_VERSION=${APP_VERSION}"
+```
+
+---
+
+## Scenario 28: View Image Build History
+
+```bash
+docker history myapp:v1
+```
+
+### Note
+
+Used to view image layer history.
+
+Helps analyze:
+
+- Which layer is large
+- Whether sensitive information exists
+- Whether extra build steps exist
+- Whether unreasonable layers exist
+
+---
+
+## Scenario 29: View Image Details
+
+```bash
+docker inspect myapp:v1
+```
+
+Common uses: /think
+
+- View image environment variables
+- View start command
+- View working directory
+- View exposed ports
+- View labels
+- View image metadata
+
+---
+
+## Eight, Dockerfile Examples
+
+---
+
+## Example 1: Nginx Static Page Image
+
+Directory structure:
+
+```text
+my-nginx/
+├── Dockerfile
+└── html/
+    └── index.html
+```
+
+Dockerfile:
+
+```dockerfile
+FROM nginx:1.27
+
+COPY ./html /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Build image:
+
+```bash
+docker build -t my-nginx:v1 .
+```
+
+Run container:
+
+```bash
+docker run -d --name my-nginx -p 8080:80 my-nginx:v1
+```
+
+Access:
+
+```text
+http://HostIP:8080
+```
+
+View logs:
+
+```bash
+docker logs -f my-nginx
+```
+
+---
+
+## Example 2: Simple Tool Image Based on Alpine
+
+Dockerfile:
+
+```dockerfile
+FROM alpine:3.20
+
+RUN apk add --no-cache curl bind-tools iproute2
+
+CMD ["/bin/sh"]
+```
+
+Build:
+
+```bash
+docker build -t ops-tools:v1 .
+```
+
+Run:
+
+```bash
+docker run --rm -it ops-tools:v1
+```
+
+Common uses:
+
+- Temporary curl testing
+- DNS testing
+- Network route inspection
+- Container environment troubleshooting
+
+---
+
+## Example 3: Java JAR Application Image
+
+Directory structure:
+
+```text
+java-app/
+├── Dockerfile
+└── app.jar
+```
+
+Dockerfile:
+
+```dockerfile
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+COPY app.jar /app/app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+
+Build:
+
+```bash
+docker build -t java-app:v1 .
+```
+
+Run:
+
+```bash
+docker run -d --name java-app -p 8080:8080 java-app:v1
+```
+
+View logs:
+
+```bash
+docker logs -f java-app
+```
+
+---
+
+## Example 4: Image with Non-root User
+
+Dockerfile:
+
+```dockerfile
+FROM alpine:3.20
+
+RUN adduser -D appuser
+
+WORKDIR /app
+
+COPY app.sh /app/app.sh
+
+RUN chmod +x /app/app.sh \
+    && chown -R appuser:appuser /app
+
+USER appuser
+
+CMD ["/app/app.sh"]
+```
+
+Note:
+
+```text
+Create appuser
+→ Copy Apply File
+→ Modify Permissions
+→ Switch to appuser Run
+```
+
+This is safer than running as root by default.
+
+---
+
+## Example 5: Multi-stage Build Example
+
+Multi-stage builds are commonly used for:
+
+- Compilation stage requires many dependencies
+- Runtime stage only needs final product
+- Reduce final image size
+- Avoid compiler tools in production image
+
+Example:
+
+```dockerfile
+FROM golang:1.23 AS builder
+
+WORKDIR /src
+
+COPY . .
+
+RUN go build -o app main.go
+
+
+FROM alpine:3.20
+
+WORKDIR /app
+
+COPY --from=builder /src/app /app/app
+
+CMD ["/app/app"]
+```
+
+Understanding:
+
+```text
+Phase I builder
+→ Compiled
+
+Phase II alpine
+→ Keep only the files required for running
+```
+
+The final image will not include Go compiler environment.
+
+Key points:
+
+```dockerfile
+FROM golang:1.23 AS builder
+```
+
+Indicates the first stage is named `builder`.
+
+```dockerfile
+COPY --from=builder /src/app /app/app
+```
+
+Indicates copying compiled artifacts from `builder` stage to final runtime stage.
+
+---
+
+## Example 6: Node.js Multi-stage Build Example
+
+Directory structure:
+
+```text
+node-app/
+├── Dockerfile
+├── package.json
+├── package-lock.json
+└── src/
+```
+
+Dockerfile:
+
+```dockerfile
+FROM node:20 AS deps
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
+
+FROM node:20 AS builder
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY . .
+
+RUN npm run build
+
+
+FROM node:20-slim AS runtime
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=builder /app/dist ./dist
+
+COPY --from=builder /app/package.json ./package.json
+
+CMD ["node", "dist/main.js"]
+```
+
+Stage explanation:
+
+```text
+deps
+→ Installation Dependence
+
+builder
+→ Copy Source and Build
+
+runtime
+→ Only keep the files needed to run
+```
+
+Advantages:
+
+- Reusable cache for dependency installation stage
+- Separation of build and runtime stages
+- Cleaner final image
+
+---
+
+## Example 7: Using ARG and LABEL to Mark Image Version
+
+Dockerfile:
+
+```dockerfile
+FROM alpine:3.20
+
+ARG APP_VERSION=1.0.0
+ARG GIT_COMMIT=unknown
+
+LABEL app="demo-app" \
+      version="${APP_VERSION}" \
+      git_commit="${GIT_COMMIT}"
+
+CMD ["/bin/sh"]
+```
+
+Build:
+
+```bash
+docker build \
+  --build-arg APP_VERSION=1.0.1 \
+  --build-arg GIT_COMMIT=abc1234 \
+  -t demo-app:1.0.1 .
+```
+
+View image details:
+
+```bash
+docker inspect demo-app:1.0.1
+```
+
+Common uses:
+
+- Mark application version
+- Mark Git commit
+- Mark build source
+- Facilitate CI/CD tracking of images
+
+---
+
+## Nine, Image Layering and Caching
+
+---
+
+## 1. Each Dockerfile instruction may form a layer
+
+Example:
+
+```dockerfile
+FROM ubuntu:22.04
+RUN apt-get update
+RUN apt-get install -y curl
+COPY app.sh /app/app.sh
+```
+
+Can be understood as:
+
+```text
+FROM First floor
+RUN First floor
+RUN First floor
+COPY First floor
+```
+
+More image layers don't necessarily mean worse, but unreasonable layers will increase image size and build complexity.
+
+---
+
+## 2. Cache Hit and Miss
+
+Docker will try to reuse cache during build.
+
+If earlier layers change, later layers will typically rebuild.
+
+Example:
+
+```dockerfile
+COPY . /app
+RUN npm install
+```
+
+As long as any file in current directory changes, `COPY . /app` may cause `RUN npm install` to re-execute.
+
+Better practice is usually to copy dependency declaration files first:
+
+```dockerfile
 COPY package.json package-lock.json /app/
 RUN npm install
 COPY . /app
-```- The stage name is incorrect.
-- `FROM ... AS builder` has not been defined.
-- There are inconsistencies in casing.
-- The order of multi-stage builds is incorrect.
-- The wrong stage number is being used.
+```
 
-Incorrect example:
+This way, when dependencies don't change, cache for `npm install` can be reused.
+
+---
+
+## 3. Cache Optimization Principles
+
+```text
+Put the less changed in front.
+The change is behind you.
+Reliance on installation as separate layers as possible
+Copy the source code as far as you can.
+```
+
+---
+
+## 4. Multi-stage Build and Caching
+
+Multi-stage builds also utilize caching.
+
+Example:
+
+```dockerfile
+FROM node:20 AS deps
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
+
+FROM node:20 AS builder
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY . .
+
+RUN npm run build
+```
+
+If `package.json` and `package-lock.json` don't change, the `npm ci` stage can reuse cache.
+
+If only business source code changes, typically only the later build stages will re-execute.
+
+---
+
+## Ten, Dockerfile Production Best Practices
+
+---
+
+## 1. Use fixed version base images
+
+Not recommended:
+
+```dockerfile
+FROM nginx:latest
+```
+
+Recommended:
+
+```dockerfile
+FROM nginx:1.27
+```
+
+Reasons:
+
+- More stable build results
+- Easier to reproduce issues
+- Clearer rollback
+- More controllable CI/CD
+
+---
+
+## 2. Prefer smaller base images
+
+Common choices:
+
+```text
+alpine
+slim
+distroless
+```
+
+Example:
+
+```dockerfile
+FROM python:3.12-slim
+```
+
+Note:
+
+```text
+Small mirrors are not absolutely the best, depending on operational dependency and accessibility.
+```
+
+Using Alpine may encounter glibc/musl compatibility issues in some scenarios, need to judge based on actual application.
+
+---
+
+## 3. Don't write sensitive information into Dockerfile
+
+Wrong example:
+
+```dockerfile
+ENV DB_PASSWORD=123456
+```
+
+Wrong example:
+
+```dockerfile
+RUN echo "token=xxxxx" > /app/token.txt
+```
+
+Reasons:
+
+- May enter image layers
+- May enter image history
+- May be pushed to Harbor
+- May be seen after someone pulls
+
+Better practice:
+
+```text
+Run-time injection
+CI/CD Secret
+Kubernetes Secret
+Docker Compose env_file
+```
+
+---
+
+## 4. Prefer non-root user to run
+
+Example:
+
+```dockerfile
+RUN adduser -D appuser
+
+USER appuser
+```
+
+Benefits:
+
+- Lower container escape risk
+- Lower risk of accidental operations
+- Comply with least privilege principle
+- More suitable for production security baseline
+
+---
+
+## 5. Use .dockerignore
+
+`.dockerignore` example:
+
+```text
+.git
+node_modules
+*.log
+.env
+*.pem
+id_rsa
+```
+
+Effects:
+
+- Avoid irrelevant files entering build context
+- Avoid sensitive files entering image
+- Improve build speed
+- Reduce image size
+
+---
+
+## 6. Merge RUN commands reasonably
+
+Not recommended:
+
+```dockerfile
+RUN apt-get update
+RUN apt-get install -y curl
+RUN rm -rf /var/lib/apt/lists/*
+```
+
+Recommended:
+
+```dockerfile
+RUN apt-get update \
+    && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+---
+
+## 7. Use exec format CMD / ENTRYPOINT
+
+Recommended:
+
+```dockerfile
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Not recommended:
+
+```dockerfile
+CMD nginx -g "daemon off;"
+```
+
+Reasons:
+
+- Clearer signal handling with exec format
+- More controllable container shutdown
+- More aligned with container main process model
+
+---
+
+## 8. Run only one main process per container
+
+Containers are not virtual machines.
+
+Not recommended to run many services in one container:
+
+```text
+nginx + mysql + redis + cron + sshd
+```
+
+Better practice:
+
+```text
+One container, one main service.
+Multiple services Compose / Kubernetes Organization
+```
+
+---
+
+## 9. Separate build artifacts and runtime environment
+
+For applications requiring compilation, recommend using multi-stage build:
+
+```dockerfile
+FROM golang:1.23 AS builder
+
+WORKDIR /src
+
+COPY . .
+
+RUN go build -o app main.go
+
+
+FROM alpine:3.20
+
+WORKDIR /app
+
+COPY --from=builder /src/app /app/app
+
+CMD ["/app/app"]
+```
+
+Benefits:
+
+- Smaller final image
+- No compiler tools included
+- Reduce attack surface
+- More suitable for production release
+
+---
+
+## 10. Stage names should be clear
+
+Not recommended:
+
+```dockerfile
+FROM node:20 AS a
+```
+
+```dockerfile
+FROM node:20 AS b
+```
+
+Better practice:
+
+```dockerfile
+FROM node:20 AS deps
+```
+
+```dockerfile
+FROM node:20 AS builder
+```
+
+```dockerfile
+FROM node:20-slim AS runtime
+```
+
+Reasons:
+
+- Better readability
+- Easier maintenance later
+- Clearer troubleshooting in CI/CD
+- Less confusion when copying between stages in multi-stage builds
+
+---
+
+## Eleven, Common Issues and Troubleshooting
+
+---
+
+## Problem 1: docker build can't find file
+
+Symptoms:
+
+```text
+COPY failed: file not found
+```
+
+Common causes:
+
+- File not in build context
+- Wrong path
+- `.dockerignore` excludes the file
+- Wrong directory for executing `docker build`
+
+Troubleshoot:
+
+```bash
+ls -lh
+``` /think
+
+View `.dockerignore`:
+
+```bash
+cat .dockerignore
+```
+
+Confirm build command:
+
+```bash
+docker build -t myapp:v1 .
+```
+
+---
+
+## Problem 2: Slow Image Build
+
+Common Causes:
+
+- Build context is too large
+- No `.dockerignore`
+- Always using `--no-cache`
+- Dependency installation steps don't leverage caching
+- Base image is too large
+- Network download dependencies is slow
+
+Troubleshoot:
+
+```bash
+docker build -t myapp:v1 .
+```
+
+Check build context size and time per step.
+
+Optimize:
+
+```text
+Increase .dockerignore
+Adjustment COPY Order
+Reduce invalid files
+Fixed dependent version
+Use Build Cache
+```
+
+---
+
+## Problem 3: Large Image Size
+
+Check image:
+
+```bash
+docker images
+```
+
+Check image history:
+
+```bash
+docker history myapp:v1
+```
+
+Common Causes:
+
+- Base image is too large
+- Unnecessary software is installed
+- Package manager cache isn't cleaned
+- Source code, test files, and log files are copied into the image
+- Multi-stage build isn't used
+
+Optimization Direction:
+
+```text
+Select smaller base mirror
+Use .dockerignore
+Clear Cache
+Reduction of unnecessary dependency
+Use multistage construction
+```
+
+---
+
+## Problem 4: Container Exits Immediately After Start
+
+Check container:
+
+```bash
+docker ps -a
+```
+
+Check logs:
+
+```bash
+docker logs ContainersID
+```
+
+Check image startup command:
+
+```bash
+docker inspect Mirror Name
+```
+
+Common Causes:
+
+- `CMD` is written incorrectly
+- `ENTRYPOINT` is written incorrectly
+- Main process exits after completion
+- Application startup fails
+- Configuration file error
+- Insufficient permissions
+- File not found
+
+For example, if the container's main command is:
+
+```dockerfile
+CMD ["echo", "hello"]
+```
+
+The container will exit after execution, which is normal.
+
+Long-running services need a foreground main process.
+
+---
+
+## Problem 5: Nginx Container Exits Immediately After Start
+
+Incorrect Writing:
+
+```dockerfile
+CMD ["nginx"]
+```
+
+Recommended:
+
+```dockerfile
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Cause:
+
+```text
+The container requires a front-stage main process
+Nginx Default may be by daemon Organisation
+The main process exits and the container exits.
+```
+
+---
+
+## Problem 6: apt Installation Fails During Build
+
+Example:
+
+```dockerfile
+RUN apt-get update && apt-get install -y curl
+```
+
+Common Causes:
+
+- Network issues
+- DNS resolution failure
+- apt source is unavailable
+- Base image is outdated
+- Package name is written incorrectly
+
+Troubleshoot can temporarily enter the base image:
+
+```bash
+docker run --rm -it ubuntu:22.04 /bin/bash
+```
+
+Manual Testing:
+
+```bash
+apt-get update
+```
+
+```bash
+apt-get install -y curl
+```
+
+---
+
+## Problem 7: Insufficient File Permissions
+
+Common Phenomenon:
+
+```text
+Permission denied
+```
+
+Possible Causes:
+
+- `USER` switched to non-root
+- File owner is incorrect
+- File lacks execute permission
+- Directory lacks write permission
+
+Example Fix:
+
+```dockerfile
+RUN chmod +x /app/start.sh
+```
+
+```dockerfile
+RUN chown -R appuser:appuser /app
+```
+
+---
+
+## Problem 8: COPY --from Cannot Find Stage
+
+Phenomenon:
+
+```text
+COPY --from=builder failed
+```
+
+Common Causes:
+
+- Stage name is written incorrectly
+- `FROM ... AS builder` is not defined
+- Case mismatch
+- Multi-stage build order is scrambled
+- Wrong stage number is used
+
+Incorrect Example:
 
 ```dockerfile
 FROM golang:1.23 AS build
@@ -485,14 +2168,15 @@ FROM alpine:3.20
 COPY --from=builder /src/app /app/app
 ```
 
-Issue:
+Problem:
 
 ```text
-The defined stage name is "build", but the reference uses "builder".
-The stage names are inconsistent.
+By definition, build
+Quoted builder
+The stage name is not consistent
 ```
 
-Correct example:
+Correct Example:
 
 ```dockerfile
 FROM golang:1.23 AS builder
@@ -515,62 +2199,62 @@ CMD ["/app/app"]
 
 ---
 
-## Issue 9: Incorrect path for COPY --from
+## Problem 9: COPY --from Path is Written Incorrectly
 
-Incorrect example:
+Incorrect Example:
 
 ```dockerfile
 COPY --from=builder /app/app /app/app
 ```
 
-However, the actual build output is in:
+But actual build output is in:
 
 ```text
 /src/app
 ```
 
-Correct way to write it:
+Correct Writing:
 
 ```dockerfile
 COPY --from=builder /src/app /app/app
 ```
 
-Troubleshooting steps:
+Troubleshooting Approach:
 
 ```text
-Confirm the WORKDIR of the builder stage.
-→ Confirm the output path for the RUN command during construction.
-→ Confirm the source path specified in COPY --from.
-→ Confirm the target path of the final stage.
+Confirm. builder Phase WORKDIR
+→ Confirm. RUN Build Output Path
+→ Confirm. COPY --from Source Path
+→ Confirm final stage target path
 ```
 
 ---
 
-## XII. Summary of Common Commands
+## Section Twelve: Common Commands Summary
 
 ---
 
-## Building Images
+## Build Image
 
-Build from the current directory:
+Build in current directory:
 
 ```bash
 docker build -t myapp:v1 .
 ```
 
-Specify a Dockerfile:
+Specify Dockerfile:
 
 ```bash
 docker build -f Dockerfile.prod -t myapp:prod .
 ```
 
-Build without using cache:
+Build without cache:
 
 ```bash
 docker build --no-cache -t myapp:v1 .
 ```
 
-Pass parameters during building:
+Pass parameters during build:
 
 ```bash
 docker build --build-arg APP_VERSION=1.0.1 -t myapp:1.0.1 .
@@ -578,15 +2262,15 @@ docker build --build-arg APP_VERSION=1.0.1 -t myapp:1.0.1 .
 
 ---
 
-## Viewing Images
+## View Image
 
-View the list of images:
+View image list:
 
 ```bash
 docker images
 ```
 
-View the image history:
+View image history:
 
 ```bash
 docker history myapp:v1
@@ -600,21 +2284,21 @@ docker inspect myapp:v1
 
 ---
 
-## Running Tests
+## Run Test
 
-Run a container:
+Run container:
 
 ```bash
 docker run -d --name myapp -p 8080:8080 myapp:v1
 ```
 
-Temporarily enter a container:
+Temporarily enter container:
 
 ```bash
 docker run --rm -it myapp:v1 /bin/sh
 ```
 
-View containers:
+View container:
 
 ```bash
 docker ps -a
@@ -626,7 +2310,7 @@ View logs:
 docker logs -f myapp
 ```
 
-Enter a running container:
+Enter running container:
 
 ```bash
 docker exec -it myapp /bin/sh
@@ -634,27 +2318,27 @@ docker exec -it myapp /bin/sh
 
 ---
 
-## Tagging and Pushing Images
+## Tag and Push
 
-Tag an image:
+Tag:
 
 ```bash
 docker tag myapp:v1 10.0.0.10:8090/project/myapp:v1
 ```
 
-Log in to Harbor:
+Login to Harbor:
 
 ```bash
 docker login 10.0.0.10:8090
 ```
 
-Push an image:
+Push image:
 
 ```bash
 docker push 10.0.0.10:8090/project/myapp:v1
 ```
 
-Pull an image:
+Pull image:
 
 ```bash
 docker pull 10.0.0.10:8090/project/myapp:v1
@@ -664,13 +2348,13 @@ docker pull 10.0.0.10:8090/project/myapp:v1
 
 ## Troubleshooting Assistance
 
-View the current directory:
+View current directory:
 
 ```bash
 pwd
 ```
 
-View files:
+View file:
 
 ```bash
 ls -lh
@@ -682,13 +2366,13 @@ View `.dockerignore`:
 cat .dockerignore
 ```
 
-View the Dockerfile:
+View Dockerfile:
 
 ```bash
 cat Dockerfile
 ```
 
-View the build context:
+View build context:
 
 ```bash
 ls -lah
@@ -696,45 +2380,110 @@ ls -lah
 
 ---
 
-## XIII. In One Sentence
+## Section Thirteen: One-Sentence Summary
 
-The core value of a Dockerfile is to:
+The core value of Dockerfile is:
 
-- Transform the steps involved in manually building an image into a repeatable text file.
-- Use `docker build` to automatically generate the image.
-- Then push it to Harbor or make it available for use by Kubernetes.
+Transform manual image building steps
 
-Key process flow:
+→ Into a repeatable text file
+
+→ Automatically generate image via docker build
+
+→ Then push to Harbor or hand over to Kubernetes
+
+Core workflow:
 
 ```text
-Write a Dockerfile.
-→ Create a `.dockerignore` file.
-→ Use `docker build` to construct the image.
-→ Run it locally for verification.
-→ Add repository tags using `docker tag`.
-→ Push the image to Harbor.
-→ Use it in Kubernetes or Compose.
+Prepared Dockerfile
+→ Prepared .dockerignore
+→ docker build Build mirrors
+→ docker run Local Authentication
+→ docker tag Play repository tags
+→ docker push Send Harbor
+→ Kubernetes / Compose Use mirror
 ```
 
-Understanding common Dockerfile commands:
+Understanding common Dockerfile instructions:
 
 ```text
 FROM
-→ Selects the base image.
+→ Select Basic Mirror
 
 FROM ... AS ...
-→ Gives a name to a specific stage in a multi-stage build.
+→ Naming a phase in a multi-stage construction
 
 RUN
-→ Executes commands during the build phase.
+→ Command execution for build phase
 
 COPY
-→ Copies files into the image.
+→ Copy file to mirror
 
-COPY --from=stage_name
-→ Copies files from a specified build stage.
+COPY --from=Phase Name
+→ Copy files from the specified build phase
 
 ADD
-→ Copies files, with additional support for automatic decompression.
+→ Copy files, extra support for automatic decompression
 
-WORK
+WORKDIR
+→ Set Task Directory
+
+ENV
+→ Set run-time environment variable
+
+ARG
+→ Set build parameters
+
+EXPOSE
+→ Declaration of container port
+
+CMD
+→ Default Start Command
+
+ENTRYPOINT
+→ Fixed Entry Command
+
+USER
+→ Specify running user
+
+VOLUME
+→ Declaration Data Catalogue
+
+LABEL
+→ Add mirror metadata
+
+HEALTHCHECK
+→ Definition of health screening
+```
+
+Understanding multi-stage build:
+
+```text
+FROM golang:1.23 AS builder
+→ Create builder Build Phase
+
+COPY --from=builder /src/app /app/app
+→ From builder Phase reproduction product
+
+The final mirror only keeps the files needed to run
+→ No compilation tool maintained
+→ Do not keep source
+→ The mirror is smaller.
+→ The attack is smaller.
+```
+
+Production Recommendations:
+
+```text
+Base mirror fixed version, not permanently used latest
+Don't take the password.tokenKey writing Dockerfile
+Use non as much as possible root User Run
+Use .dockerignore Exclude irrelevant files
+Rational use of build caches
+Reduction of unnecessary dependency
+Clean Cache After Build
+Use Priority exec Format CMD / ENTRYPOINT
+Compiler application prioritizes multi-stage construction
+A clear proposal for multi-stage construction AS Phase Name
+Local validation is required after mirror construction is completed
+```

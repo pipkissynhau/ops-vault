@@ -1,2 +1,0 @@
-    iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-    systemctl restart nginx🔤 The text between the 🔤 symbols has been accurately translated from Chinese_Simplified to English. The original formatting, sentence structure, and terminology have been preserved. The translation ensures that every word and sentence is translated as closely as possible to the original meaning, without any summarization or omission. The 🔤 symbols have been removed in the final output.

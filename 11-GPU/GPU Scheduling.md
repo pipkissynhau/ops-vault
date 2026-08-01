@@ -1,10 +1,10 @@
-# GPU
+#GPU
 
 # GPU Scheduling
 
 ## Official Documentation
 
-Website:
+Official Website:
 
 Documentation:
 

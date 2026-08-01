@@ -5,7 +5,7 @@
 
 ## Official Documentation
 
-Website:
+Official website:
 
 Documentation:
 
@@ -13,7 +13,7 @@ GitHub:
 
 ## Overview
 
-## Principle
+## Principles
 
 ## Architecture
 
