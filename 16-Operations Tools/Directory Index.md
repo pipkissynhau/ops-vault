@@ -7,4 +7,3 @@
 - [[Kuboard]]
 - [[Lens]]
 - [[Terraform]]
- /think
