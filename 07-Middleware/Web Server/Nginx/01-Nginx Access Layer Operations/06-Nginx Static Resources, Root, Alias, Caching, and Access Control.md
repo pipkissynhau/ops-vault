@@ -1,136 +1,109 @@
-# 06-Nginx Static Resources, root, alias, Caching, and Access Control
+# 06-Nginx Static Resources, Root, Alias, Caching, and Access Control
 
-#Nginx #StaticResources #root #alias #Cache #AccessControl #WebServer #AccessLayer #Middle #Transport #SRE
+# Nginx #Static Resources #Root #Alias #Caching #Access Control #Web Server #Access Layer #Middleware #Operation and Maintenance #SRE
 
 ---
 
 ## Recommended Path
 
-07-Middlewares/Web Server/Nginx/01-Nginx Access Layer Operations/06-Nginx Static Resources, root-alias, Caching, and Access Control.md
+07-Middleware/Web Server/Nginx/01-Nginx Access Layer Operation and Maintenance/06-Nginx Static Resources, Root-Alias, Caching, and Access Control.md
 
 ---
 
-## One: Document Description
+## I. Document Overview
 
-This document organizes content about Nginx static resource services, `root`, `alias`, caching control, and access control.
+This article outlines Nginx-related settings for static resource services, `root`, `alias`, caching control, and access management.
 
-Key points covered in this article include:
+Key topics include:
 
-- Nginx Static Resource Service Basics
-- Difference between `root` and `alias`
-- Relationship between `location` and static directory mapping
-- `index` homepage file
-- `try_files` basics
-- `try_files` configuration for single-page applications (SPAs)
+- Basics of Nginx static resource services
+- Differences between `root` and `alias`
+- The relationship between `location` and static directory mapping
+- The `index` file for setting the homepage
+- Basics of `try_files`
+- `try_files` configuration for single-page applications (SPA)
 - Static resource caching control
-- `expires` and `Cache-Control`
-- Caching strategies for images, CSS, and JS
-- Disabling caching for HTML
-- `gzip` compression basics
-- `autoindex` directory browsing control
-- `allow` / `deny` IP access control
+- `expires` and `Cache-Control` headers
+- Caching strategies for images, CSS, and JS files
+- Preventing HTML file caching
+- Basics of `gzip` compression
+- `autoindex` for directory browsing control
+- `allow`/`deny` IP address access control
 - Basic Auth access authentication
 - Hiding sensitive files
-- Preventing access to `.git`, `.env`, and backup files
-- Common troubleshooting for 403 / 404 errors
-- Static resource permission issues
-- Production environment considerations
+- Protecting `.git`, `.env`, and backup files from access
+- Common troubleshooting for 403/404 errors
+- Issues with static resource permissions
+- Best practices for production environments
 
-This article is part of the Nginx Access Layer Operations series, Article 06.
+This article is part of the Nginx Access Layer Operation and Maintenance series, Chapter 06.
 
-This article's objectives:
+Objectives:
 
 ```text
-It works. Nginx Provide static resource access
-
-→ I understand. root and alias The path clutter difference
-
-→ correctly configure front-end static sites
-
-→ I can handle it. SPA Refresh 404 Problem
-
-→ Configure static resource caches
-
-→ It limits access to sensitive paths.
-
-→ I can check. 403I don't know.404Cache failure, static file access anomaly
+- Be able to use Nginx to serve static resources effectively.
+- Understand the differences in path concatenation between `root` and `alias`.
+- Correctly configure front-end static websites.
+- Resolve 404 errors when SPA pages are refreshed.
+- Set up static resource caching properly.
+- Restrict access to sensitive directories.
+- Diagnose and fix issues related to 403, 404 errors, ineffective caching, and abnormal static file access.
 ```
 
 ---
 
-## Two: Role of Nginx Static Resource Service
+## II. Role of Nginx in Serving Static Resources
 
-Nginx can not only act as a reverse proxy but also directly provide static resource access.
+Nginx can not only act as a reverse proxy but also directly provide access to static resources.
 
-Common static resources include:
+Common types of static resources include:
 
 ```text
-HTML
-
-CSS
-
-JavaScript
-
-Picture
-
+HTML files
+CSS stylesheets
+JavaScript scripts
+Images
 Fonts
-
-Download File
-
-Front-end builder
-
-Document File
-
-Static sites
+Downloadable files
+Front-end build outputs
+Documentation files
+Static websites
 ```
 
-Typical scenarios:
+Typical use cases:
 
 ```text
-Frontend Vue / React / Next Static construction product
-
-Home Page of the Official Network
-
-Manage frontend pages in the background
-
-Photo Resource Directory
-
-File Download Directory
-
-Static Document Sites
-
-Transport Download Page
+- Static build outputs for front-end frameworks like Vue, React, or Next.js.
+- Homepages of official websites.
+- Front-end pages of management interfaces.
+- Image resource directories.
+- File download directories.
+- Static documentation sites.
+- Operation and maintenance download pages.
 ```
 
 Request flow:
 
 ```text
-Client
-
-→ Nginx
-
-→ Local disk static file
+Client → Nginx → Local static files on the server
 ```
 
-Unlike reverse proxy:
+Unlike a reverse proxy:
 
 ```text
-Reverse Agent
-→ Nginx Forward to Backend Service
-
-Static resources
-→ Nginx Read this machine file directly and return
+Reverse Proxy → Nginx forwards requests to the backend service.
+Static Resources → Nginx directly retrieves the files from its local storage and returns them to the client.
 ```
 
 ---
 
-## Three: Basic Static Resource Configuration
+## III. Basic Configuration of Static Resources
 
 ---
 
-## Scenario 1: Most Basic Static Website Configuration
+## Scenario 1: Basic configuration for a static website
 
-Assume static file directory:
+Assume the static file directory is:
 
 ```text
 /data/www/example
@@ -140,9 +113,7 @@ Directory contents:
 
 ```text
 /data/www/example/index.html
-
 /data/www/example/static/app.js
-
 /data/www/example/static/app.css
 ```
 
@@ -162,38 +133,36 @@ server {
 }
 ```
 
-Meaning:
+Explanation:
 
 ```text
 root /data/www/example
-→ Static Resource Roots Directory
-
+→ Specifies the root directory for static resources.
 index index.html
-→ Default homepage file
-
+→ Sets the default homepage file.
 try_files $uri $uri/ =404
-→ Find the corresponding request file, then find the directory. 404
+→ First tries to find the requested file, then searches the directory. If not found, returns a 404 error.
 ```
 
-Check configuration:
+Verification:
 
 ```bash
 nginx -t
 ```
 
-Reload:
+Reload configuration:
 
 ```bash
 systemctl reload nginx
 ```
 
-Local verification:
+Local test:
 
 ```bash
 curl -I -H "Host: example.com" http://127.0.0.1/
 ```
 
-Access file:
+Access files:
 
 ```bash
 curl -I -H "Host: example.com" http://127.0.0.1/static/app.js
@@ -201,15 +170,15 @@ curl -I -H "Host: example.com" http://127.0.0.1/static/app.js
 
 ---
 
-## Scenario 2: Create Test Static Directory
+## Scenario 2: Creating a test static directory
 
-Create directory:
+Create a new directory:
 
 ```bash
 mkdir -p /data/www/example/static
 ```
 
-Create homepage:
+Create a homepage file:
 
 ```bash
 cat > /data/www/example/index.html <<'EOF'
@@ -220,305 +189,18 @@ cat > /data/www/example/index.html <<'EOF'
     <title>Nginx Static Demo</title>
 </head>
 <body>
-    <h1>Hello Nginx Static</h1>
-</body>
-</html>
-EOF
-```
-
-Create test JS:
-
-```bash
-cat > /data/www/example/static/app.js <<'EOF'
-console.log("hello nginx static");
-EOF
-```
-
-View files:
-
-```bash
-find /data/www/example -type f -maxdepth 3 -ls
-```
+    <h| `location /static/ { root /data/www; }` | `/static/app.js` | `/data/www/static/app.js` | The full URI is concatenated from the root directory |
+| `location /static/ { alias /data/assets/; }` | `/static/app.js` | `/data/assets/app.js` | The alias replaces `/static/` in the path |
+| `location /download/ { root /data/files; }` | `/download/a.zip` | `/data/files/download/a.zip` | The root directory prefix is retained in the URI |
+| `location /download/ { alias /data/files/; }` | `/download/a.zip` | `/data/files/a.zip` | The URI prefix is removed when using the alias |
 
 ---
 
-## Four: root Basics
+## VII. Notes on Slashes at the End of Aliases
 
 ---
 
-## Scenario 3: What is root
-
-`root` is used to specify the root directory for static resources.
-
-Configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    root /data/www/example;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-```
-
-Request:
-
-```text
-http://example.com/index.html
-```
-
-Actual file path:
-
-```text
-/data/www/example/index.html
-```
-
-Request:
-
-```text
-http://example.com/static/app.js
-```
-
-Actual file path:
-
-```text
-/data/www/example/static/app.js
-```
-
-One-sentence understanding:
-
-```text
-root 会把 URI 拼接到 root 目录后面。
-```
-
----
-
-## Scenario 4: root Written in server
-
-Configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    root /data/www/example;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-```
-
-Explanation:
-
-```text
-server 内的所有 location 默认继承 root
-
-除非 location 中重新定义 root 或 alias
-```
-
----
-
-## Scenario 5: root Written in location
-
-Configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    location /static/ {
-        root /data/www/example;
-    }
-}
-```
-
-Request:
-
-```text
-/static/app.js
-```
-
-Actual file path:
-
-```text
-/data/www/example/static/app.js
-```
-
-Note:
-
-```text
-即使 root 写在 location 中，URI 仍然会拼接在 root 后面
-```
-
----
-
-## Five: alias Basics
-
----
-
-## Scenario 6: What is alias
-
-`alias` is used to map a specific URI path to a designated directory.
-
-Configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    location /static/ {
-        alias /data/assets/;
-    }
-}
-```
-
-Request:
-
-```text
-/static/app.js
-```
-
-Actual file path:
-
-```text
-/data/assets/app.js
-```
-
-One-sentence understanding:
-
-```text
-alias 会用指定目录替换 location 匹配到的路径前缀。
-```
-
----
-
-## Scenario 7: Common Uses of alias
-
-Suitable for:
-
-```text
-URL 路径和磁盘目录不一致
-
-多个 URL 映射不同目录
-
-静态资源单独放在另一个目录
-
-下载目录不在站点根目录下
-
-图片目录独立管理
-```
-
-Example:
-
-```nginx
-location /downloads/ {
-    alias /data/files/public/;
-}
-```
-
-Request:
-
-```text
-/downloads/manual.pdf
-```
-
-Actual file:
-
-```text
-/data/files/public/manual.pdf
-```
-
----
-
-## Six: Core Differences Between root and alias
-
----
-
-## Scenario 8: root Path Concatenation
-
-Configuration:
-
-```nginx
-location /static/ {
-    root /data/www/example;
-}
-```
-
-Request:
-
-```text
-/static/app.js
-```
-
-Actual path:
-
-```text
-/data/www/example/static/app.js
-```
-
-Rule:
-
-```text
-root 目录 + 完整 URI
-```
-
----
-
-## Scenario 9: alias Path Replacement
-
-Configuration:
-
-```nginx
-location /static/ {
-    alias /data/assets/;
-}
-```
-
-Request:
-
-```text
-/static/app.js
-```
-
-Actual path:
-
-```text
-/data/assets/app.js
-```
-
-Rule:
-
-```text
-alias 目录替换 location 匹配到的 /static/
-```
-
----
-
-## Scenario 10: root and alias Comparison Table
-
-| Configuration | Request URI | Actual File Path | Notes |
-|---|---|---|---|
-| `location /static/ { root /data/www; }` | `/static/app.js` | `/data/www/static/app.js` | root appends complete URI |
-| `location /static/ { alias /data/assets/; }` | `/static/app.js` | `/data/assets/app.js` | alias replaces `/static/` |
-| `location /download/ { root /data/files; }` | `/download/a.zip` | `/data/files/download/a.zip` | root preserves URI prefix |
-| `location /download/ { alias /data/files/; }` | `/download/a.zip` | `/data/files/a.zip` | alias removes URI prefix |
-
----
-
-## Seven: alias Trailing Slash Considerations
-
----
-
-## Scenario 11: Recommend Adding Slash to alias and location
+## Scenario 11: It is recommended to include slashes in both aliases and location directives
 
 Recommended configuration:
 
@@ -542,7 +224,7 @@ Actual path:
 
 ---
 
-## Scenario 12: Missing Slash in alias Can Cause Errors
+## Scenario 12: Omitting slashes in aliases can lead to errors
 
 Not recommended:
 
@@ -552,17 +234,15 @@ location /static/ {
 }
 ```
 
-May lead to unexpected path concatenation.
+This may result in incorrect path concatenation.
 
-Production recommendation:
+Production advice:
 
 ```text
-location /xxx/ 使用 alias 时
-
-alias 目录也使用 / 结尾
+When using an alias in /xxx/, ensure the alias directory also ends with a slash
 ```
 
-Recommended:
+Recommended configuration:
 
 ```nginx
 location /static/ {
@@ -572,11 +252,11 @@ location /static/ {
 
 ---
 
-## Eight: index Homepage File
+## VIII. Index Pages
 
 ---
 
-## Scenario 13: Purpose of index
+## Scenario 13: The role of index files
 
 Configuration:
 
@@ -584,31 +264,31 @@ Configuration:
 index index.html index.htm;
 ```
 
-Purpose:
+Function:
 
 ```text
-当请求目录时，默认返回目录下的首页文件
+When requesting a directory, the server returns the default homepage file within that directory by default.
 ```
 
-For example request:
+For example, if you request:
 
 ```text
 http://example.com/
 ```
 
-Actual response:
+The actual response will be:
 
 ```text
 /data/www/example/index.html
 ```
 
-If request:
+If you request:
 
 ```text
 http://example.com/docs/
 ```
 
-Will attempt:
+Nginx will attempt to find:
 
 ```text
 /data/www/example/docs/index.html
@@ -616,7 +296,7 @@ Will attempt:
 
 ---
 
-## Scenario 14: Multiple index Files
+## Scenario 14: Multiple index files
 
 Configuration:
 
@@ -636,13 +316,13 @@ default.html
 
 ---
 
-## Nine: try_files Basics
+## IX. Basic Usage of try_files
 
 ---
 
-## Scenario 15: What is try_files
+## Scenario 15: What is try_files?
 
-`try_files` is used to attempt file lookup in sequence.
+`try_files` is used to attempt finding files in a specified order.
 
 Common configuration:
 
@@ -652,33 +332,33 @@ location / {
 }
 ```
 
-Meaning:
+Explanation:
 
 ```text
-先查找 $uri 对应文件
+First, it tries to find the file corresponding to `$uri`.
 
-再查找 $uri/ 对应目录
+If not found, it then checks the directory corresponding to `$uri/`.
 
-都没有就返回 404
+If still absent, a 404 error is returned.
 ```
 
-For example request: /think
+For example, if you request:
 
 ```text
 /static/app.js
 ```
 
-Try:
+Nginx will first look for:
 
 ```text
 /data/www/example/static/app.js
 ```
 
-If the file exists, return it.
+If it exists, the file will be returned.
 
 ---
 
-## Scenario 16: try_files Returns a Custom 404 Page
+## Scenario 16: Using try_files to return a custom 404 page
 
 Configuration:
 
@@ -688,13 +368,13 @@ location / {
 }
 ```
 
-If the file does not exist, return:
+If the requested file does not exist, Nginx will return:
 
 ```text
 /404.html
 ```
 
-Corresponding file:
+The corresponding file would be located at:
 
 ```text
 /data/www/example/404.html
@@ -702,13 +382,13 @@ Corresponding file:
 
 ---
 
-## Ten. Single Page Application (SPA) Configuration
+## X. Configuration for Single Page Applications (SPA)
 
 ---
 
-## Scenario 17: Why SPA Refresh Causes 404
+## Scenario 17: Why do SPA refreshes result in a 404 error?
 
-Common frontend routing in Vue / React:
+Common routing patterns in Vue / React include:
 
 ```text
 /dashboard
@@ -718,7 +398,7 @@ Common frontend routing in Vue / React:
 /settings
 ```
 
-These paths exist in frontend routing but do not correspond to files on disk:
+These paths exist in the front-end routing system, but there are no corresponding files on the server:
 
 ```text
 /data/www/example/dashboard
@@ -726,11 +406,11 @@ These paths exist in frontend routing but do not correspond to files on disk:
 /data/www/example/users/10001
 ```
 
-If a user refreshes the page, Nginx will look for static files and return 404 if not found.
+When a user refreshes the page, Nginx will attempt to find the file based on the static file structure. Since it doesn't exist, a 404 error is returned.
 
 ---
 
-## Scenario 18: Recommended SPA Configuration
+## Scenario 18: Recommended configuration for SPA
 
 Configuration:
 
@@ -748,251 +428,25 @@ server {
 }
 ```
 
-Meaning:
+Explanation:
 
 ```text
-先找真实文件
+First, it tries to find the actual file.
 
-再找目录
+If not found, it checks the directory.
 
-都找不到就返回 /index.html
-
-由前端路由接管
+If neither is present, it returns `/index.html`, allowing the front-end routing system to handle the request.
 ```
 
-Suitable for:
+This configuration is suitable for:
 
 ```text
-Vue history 模式
+Vue history mode
 
 React Router BrowserRouter
 
-前后端分离静态站点
-```
-
----
-
-## Scenario 19: SPA + API Reverse Proxy
-
-Common configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    root /data/www/example;
-    index index.html;
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:8080;
-
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-}
-```
-
-Explanation:
-
-```text
-/api/ 请求转发给后端
-
-其他路径作为前端路由处理
-
-静态文件优先按真实文件返回
-```
-
----
-
-## Eleven. Static Resource Cache Control
-
----
-
-## Scenario 20: Why Configure Caching
-
-Static resources typically include:
-
-```text
-CSS
-
-JS
-
-图片
-
-字体
-
-图标
-```
-
-These files can be cached by browsers to reduce:
-
-```text
-重复请求
-
-页面加载时间
-
-Nginx 带宽压力
-
-后端压力
-
-用户访问延迟
-```
-
-However, HTML files generally should not be cached long-term, as it may lead to:
-
-```text
-前端更新后用户还看到旧页面
-
-JS / CSS 文件版本不匹配
-
-发布后页面异常
-```
-
----
-
-## Scenario 21: Set Long-Term Caching for Static Resources
-
-Configuration:
-
-```nginx
-location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
-    expires 30d;
-    add_header Cache-Control "public";
-}
-```
-
-Explanation:
-
-```text
-expires 30d
-→ 浏览器缓存 30 天
-
-Cache-Control public
-→ 允许中间缓存和浏览器缓存
-```
-
-Suitable for:
-
-```text
-带 hash 文件名的静态资源
-
-例如 app.8f3a1c.js
-
-例如 style.2ab91.css
-```
-
----
-
-## Scenario 22: Disable Strong Caching for HTML
-
-Configuration:
-
-```nginx
-location ~* \.html$ {
-    expires -1;
-    add_header Cache-Control "no-cache, no-store, must-revalidate";
-}
-```
-
-Explanation:
-
-```text
-HTML 不长期缓存
-
-避免前端发布后入口文件不更新
-```
-
----
-
-## Scenario 23: Recommended Caching Strategy for Frontend Build Artifacts
-
-Common frontend build artifacts:
-
-```text
-index.html
-
-assets/app.8f3a1c.js
-
-assets/style.a83bc.css
-
-assets/logo.91af2.png
-```
-
-Recommendation:
-
-```text
-index.html
-→ 不强缓存
-
-带 hash 的 JS / CSS / 图片
-→ 长缓存
-```
-
-Configuration example:
-
-```nginx
-location = /index.html {
-    expires -1;
-    add_header Cache-Control "no-cache, no-store, must-revalidate";
-}
-
-location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
-    expires 30d;
-    add_header Cache-Control "public, max-age=2592000";
-}
-```
-
----
-
-## Scenario 24: Verify Cache Response Headers
-
-Check response headers:
-
-```bash
-curl -I -H "Host: example.com" http://127.0.0.1/static/app.js
-```
-
-Focus on:
-
-```text
-Cache-Control
-
-Expires
-
-Last-Modified
-
-ETag
-```
-
-Check homepage response headers:
-
-```bash
-curl -I -H "Host: example.com" http://127.0.0.1/index.html
-```
-
----
-
-## Twelve. Gzip Compression Basics
-
----
-
-## Scenario 25: Why Enable gzip
-
-gzip can compress text-based resources, such as:
-
-```text
-HTML
-
-CSS
-
-JavaScript
+Static sites with front-backend separation
+``JavaScript
 
 JSON
 
@@ -1001,14 +455,14 @@ XML
 SVG
 ```
 
-Benefits:
+Advantages:
 
 ```text
-减少传输大小
+Reduces transmission size
 
-提升页面加载速度
+Improves page loading speed
 
-降低带宽压力
+Decreases bandwidth usage
 ```
 
 Not suitable for repeated compression:
@@ -1027,13 +481,13 @@ zip
 gz
 ```
 
-These are already compressed, so gzip provides minimal benefit.
+These formats are already compressed, so using gzip does not significantly improve the compression ratio.
 
 ---
 
-## Scenario 26: Basic gzip Configuration
+## Scenario 26: Basic Configuration of gzip
 
-Typically written in the `http` block:
+It is usually configured in the `http` block:
 
 ```nginx
 gzip on;
@@ -1046,25 +500,25 @@ Explanation:
 
 ```text
 gzip on
-→ 开启 gzip
+→ Enable gzip compression
 
 gzip_comp_level
-→ 压缩级别，越高越耗 CPU
+→ Compression level; higher values consume more CPU resources
 
 gzip_min_length
-→ 小于该大小不压缩
+→ Files smaller than this size will not be compressed
 
 gzip_types
-→ 指定压缩 MIME 类型
+→ Specifies the MIME types to be compressed
 ```
 
-Check configuration:
+To check the configuration:
 
 ```bash
 nginx -t
 ```
 
-Reload:
+To reload the configuration:
 
 ```bash
 systemctl reload nginx
@@ -1072,15 +526,15 @@ systemctl reload nginx
 
 ---
 
-## Scenario 27: Verify if gzip is Active
+## Scenario 27: Verifying if gzip is Effective
 
-Request with compression header:
+Include a compression header in the request:
 
 ```bash
 curl -I -H "Accept-Encoding: gzip" -H "Host: example.com" http://127.0.0.1/static/app.js
 ```
 
-Focus on response headers:
+Pay attention to the response header:
 
 ```text
 Content-Encoding: gzip
@@ -1088,13 +542,13 @@ Content-Encoding: gzip
 
 ---
 
-## Thirteen. autoindex Directory Browsing
+## Section 13: Autoindex for Directory Browsing
 
 ---
 
-## Scenario 28: What is autoindex
+## Scenario 28: What is autoindex?
 
-`autoindex` can list directory files when no index file exists.
+`autoindex` allows listing directory files when there is no home page file.
 
 Configuration:
 
@@ -1115,53 +569,53 @@ You may see a list of directory files.
 
 ---
 
-## Scenario 29: Disable autoindex in Production
+## Scenario 29: Autoindex is usually disabled in production
 
-Production recommendation:
+It is recommended to disable `autoindex` in production environments:
 
 ```nginx
 autoindex off;
 ```
 
-Reason:
+Reasons:
 
 ```text
-避免暴露目录结构
+To prevent the directory structure from being exposed
 
-避免暴露文件名
+To avoid revealing file names
 
-避免泄露备份文件
+To prevent backup files from being disclosed
 
-避免泄露历史包
+To prevent historical packages from being exposed
 
-避免被扫描器利用
+To prevent scanners from exploiting it
 ```
 
-If a file download list is indeed needed, it should be paired with:
+If you really need a list of downloadable files, consider implementing the following measures:
 
 ```text
-访问认证
+Access authentication
 
-IP 白名单
+IP address whitelist
 
-独立下载域名
+Separate download domain name
 
-严格目录权限
+Strict directory permissions
 
-文件保留周期
+Set file retention periods
 ```
 
 ---
 
-## Fourteen. IP Access Control
+## Section 14: IP Access Control
 
 ---
 
-## Scenario 30: allow / deny Basics
+## Scenario 30: Basic use of allow / deny
 
-Nginx can control access by IP.
+Nginx allows access based on IP addresses.
 
-Allow only internal network access:
+Allowing only internal network access:
 
 ```nginx
 location /admin/ {
@@ -1176,16 +630,14 @@ location /admin/ {
 Meaning:
 
 ```text
-允许 10.0.0.0/8
+Allow access from the IP ranges 10.0.0.0/8 and 192.168.0.0/16
 
-允许 192.168.0.0/16
-
-其他全部拒绝
+Deny access to all other IP addresses
 ```
 
 ---
 
-## Scenario 31: Allow Only Single IP Access
+## Scenario 31: Allowing access only from a specific IP address
 
 Configuration:
 
@@ -1200,7 +652,7 @@ location /private/ {
 
 ---
 
-## Scenario 32: Deny Specific IP
+## Scenario 32: Denying access from a particular IP address
 
 Configuration:
 
@@ -1213,61 +665,61 @@ location / {
 }
 ```
 
-Production note:
+Note in production environments:
 
 ```text
-如果 Nginx 前面还有 SLB / CDN / WAF
+If Nginx is preceded by SLB, CDN, or WAF,
 
-allow / deny 判断的是 Nginx 看到的 remote_addr
+the `allow` and `deny` rules are based on the `remote_addr` seen by Nginx,
 
-不一定是真实客户端 IP
+which may not necessarily be the actual client IP address.
 
-真实 IP 配置会在第 07 篇单独整理
+The configuration of the actual client IP address will be discussed in Chapter 07.
 ```
 
 ---
 
-## Fifteen. Basic Auth Access Authentication
+## Section 15: Basic Auth Access Authentication
 
 ---
 
-## Scenario 33: When is Basic Auth Suitable
+## Scenario 33: Suitable scenarios for Basic Auth
 
 Suitable for:
 
 ```text
-临时下载页面
+Temporary download pages
 
-内部文档页面
+Internal documentation pages
 
-测试环境入口
+Entrance to test environments
 
-简单管理后台保护
+Simple management backends
 
-临时演示站点
+Temporary demonstration sites
 ```
 
 Not suitable for:
 
 ```text
-替代正式认证系统
+Replacing formal authentication systems
 
-保护高敏感生产后台
+Protecting highly sensitive production backends
 
-复杂权限控制
+Implementing complex permission controls
 ```
 
 ---
 
-## Scenario 34: Install htpasswd Tool
+## Scenario 34: Installing the htpasswd tool
 
-Ubuntu / Debian:
+For Ubuntu / Debian:
 
 ```bash
 apt install -y apache2-utils
 ```
 
-RHEL / CentOS / Rocky / AlmaLinux:
+For RHEL / CentOS / Rocky / AlmaLinux:
 
 ```bash
 yum install -y httpd-tools
@@ -1281,276 +733,28 @@ dnf install -y httpd-tools
 
 ---
 
-## Scenario 35: Create Authentication File
+## Scenario 35: Creating authentication files
 
-Create user:
+To```nginx
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
 
-```bash
-htpasswd -c /etc/nginx/.htpasswd admin
-```
-
-Append user:
-
-```bash
-htpasswd /etc/nginx/.htpasswd user1
-```
-
-View file:
-
-```bash
-cat /etc/nginx/.htpasswd
-```
-
-Set permissions:
-
-```bash
-chmod 640 /etc/nginx/.htpasswd
-```
-
----
-
-## Scenario 36: Configure Basic Auth
-
-Configuration:
-
-```nginx
-location /download/ {
-    alias /data/files/;
-
-    auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/.htpasswd;
+location = /index.html {
+    expires -1;
+    add_header Cache-Control "no-cache, no-store, must-revalidate";
 }
-```
 
-Check:
+location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
+}
 
-```bash
-nginx -t
-```
-
-Reload:
-
-```bash
-systemctl reload nginx
-```
-
-Verify:
-
-```bash
-curl -I -u admin:密码 http://example.com/download/
-```
-
-Unauthenticated access:
-
-```bash
-curl -I http://example.com/download/
-```
-
-Expected:
-
-```text
-401 Unauthorized
-```
-
----
-
-## Sixteen. Access Control for Sensitive Files
-
----
-
-## Scenario 37: Prevent Access to Hidden Files
-
-Hidden files include:
-
-```text
-.env
-
-.git
-
-.svn
-
-.htaccess
-
-.htpasswd
-```
-
-Configuration:
-
-```nginx
 location ~ /\. {
     deny all;
 }
-```
 
-Explanation:
-
-```text
-匹配以 . 开头的隐藏路径
-
-直接拒绝访问
-```
-
----
-
-## Scenario 38: Prevent Access to .git Directory
-
-Configuration:
-
-```nginx
-location ~* /\.git {
-    deny all;
-}
-```
-
-Check if exposed:
-
-```bash
-curl -I http://example.com/.git/config
-```
-
-Security expectation:
-
-```text
-403 Forbidden
-
-或
-
-404 Not Found
-```
-
----
-
-## Scenario 39: Prevent Access to Environment Configuration Files
-
-Configuration:
-
-```nginx
-location ~* \.(env|ini|conf|bak|backup|old|sql|tar|gz|zip)$ {
-    deny all;
-}
-```
-
-Explanation:
-
-```text
-防止直接访问敏感配置、备份文件、SQL 文件、压缩包
-```
-
-Production note:
-
-```text
-这个规则要结合业务实际
-
-如果业务确实需要下载 zip，需要避免误伤
-```
-
-More secure approach:
-
-```text
-敏感文件不要放在 Web 根目录下
-```
-
----
-
-## Scenario 40: Prevent Access to Specific Directories
-
-Configuration:
-
-```nginx
-location ^~ /private/ {
-    deny all;
-}
-```
-
-Or return 404:
-
-```nginx
-location ^~ /private/ {
-    return 404;
-}
-```
-
-Explanation:
-
-```text
-return 404 比 403 更不容易暴露目录存在性
-```
-
----
-
-## Seventeen. Complete Static Resource Configuration Example
-
----
-
-## Scenario 41: Ordinary Static Site Configuration
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    root /data/www/example;
-    index index.html;
-
-    access_log /var/log/nginx/example.access.log;
-    error_log  /var/log/nginx/example.error.log warn;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
-        expires 30d;
-        add_header Cache-Control "public, max-age=2592000";
-    }
-
-    location ~ /\. {
-        deny all;
-    }
-}
-```
-
----
-
-## Scenario 42: SPA + API + Static Cache Configuration
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    root /data/www/example;
-    index index.html;
-
-    access_log /var/log/nginx/example.access.log;
-    error_log  /var/log/nginx/example.error.log warn;
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:8080;
-
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location = /index.html {
-        expires -1;
-        add_header Cache-Control "no-cache, no-store, must-revalidate";
-    }
-
-    location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
-        expires 30d;
-        add_header Cache-Control "public, max-age=2592000";
-    }
-
-    location ~ /\. {
-        deny all;
-    }
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+location / {
+    try_files $uri $uri/ /index.html;
 }
 ```
 
@@ -1580,67 +784,67 @@ server {
 
 ---
 
-## Eighteen. 403 Forbidden Troubleshooting
+## Chapter 18: Troubleshooting 403 Forbidden
 
 ---
 
 ## Scenario 44: Common Causes of 403
 
-Common causes:
+Common causes include:
 
 ```text
-文件或目录权限不足
+Insufficient file or directory permissions
 
-Nginx worker 用户无权限读取
+The Nginx worker user does not have read access
 
-目录没有 index 文件且 autoindex 关闭
+The directory lacks an index file and autoindex is disabled
 
-被 allow / deny 拒绝
+Access is denied by allow/deny rules
 
-被 location 规则 deny all
+Denial by location rules
 
-SELinux 限制
+SELinux restrictions
 
-root / alias 路径写错
+Incorrect root/alias path configuration
 
-父目录没有执行权限
+Parent directory lacks execute permissions
 ```
 
 ---
 
-## Scenario 45: 403 Troubleshooting Commands
+## Scenario 45: Commands for Troubleshooting 403
 
-Check error logs:
+To view error logs:
 
 ```bash
 tail -n 100 /var/log/nginx/error.log
 ```
 
-Filter permission:
+To filter for permission issues:
 
 ```bash
 grep -i "permission denied" /var/log/nginx/error.log | tail -n 100
 ```
 
-Check Nginx process user:
+To check the Nginx process user:
 
 ```bash
 ps -ef | grep nginx | grep -v grep
 ```
 
-Check file permissions:
+To view file permissions:
 
 ```bash
 ls -lh /data/www/example/index.html
 ```
 
-Check directory permissions:
+To check directory permissions:
 
 ```bash
 ls -ld /data/www /data/www/example
 ```
 
-Check permissions hierarchically:
+To recursively check permissions:
 
 ```bash
 namei -l /data/www/example/index.html
@@ -1648,127 +852,109 @@ namei -l /data/www/example/index.html
 
 ---
 
-## Scenario 46: 403 Due to Missing Index File in Directory
+## Scenario 46: 403 Due to Lack of a Home Page in the Directory
 
-If the request is: /think
+If you request:
 
 ```text
 http://example.com/docs/
 ```
 
-Directory exists:
+and the directory exists at:
 
 ```text
 /data/www/example/docs/
 ```
 
-But directory does not contain:
+but there is no `index.html` file, and `autoindex` is disabled, you may receive a 403 Forbidden response.
+
+Solutions include:
 
 ```text
-index.html
-```
+Adding an index.html file
 
-And:
+Returning a 404 status explicitly
 
-```nginx
-autoindex off;
-```
-
-May return:
-
-```text
-403 Forbidden
-```
-
-Handling method:
-
-```text
-增加 index.html
-
-或明确 return 404
-
-或谨慎开启 autoindex
+Carefully enabling autoindex
 ```
 
 ---
 
-## 19. 404 Not Found Troubleshooting
+## Chapter 19: Troubleshooting 404 Not Found
 
 ---
 
 ## Scenario 47: Common Causes of 404
 
-Common causes:
+Common causes include:
 
 ```text
-文件确实不存在
+The file truly does not exist
 
-root 路径写错
+Incorrect root path configuration
 
-alias 路径写错
+Incorrect alias path configuration
 
-root 和 alias 混淆
+Confusion between root and alias settings
 
-try_files 配置不正确
+Improper try_files configuration
 
-SPA 没有回退到 index.html
+SPA (Single Page Application) not redirecting to index.html
 
-请求命中了错误 server
+Request hitting the wrong server or location rule
 
-请求命中了错误 location
+Configuration files not being included correctly
 
-配置文件未被 include
-
-Nginx 未 reload
+Nginx not reloaded
 ```
 
 ---
 
-## Scenario 48: 404 Troubleshooting Commands
+## Scenario 48: Commands for Troubleshooting 404
 
-Check full configuration:
+To view the complete configuration:
 
 ```bash
 nginx -T | grep -n "server_name example.com" -A 80
 ```
 
-Check root:
+To check the root setting:
 
 ```bash
 nginx -T | grep -n "root"
 ```
 
-Check alias:
+To check the alias setting:
 
 ```bash
 nginx -T | grep -n "alias"
 ```
 
-Check location:
+To check the location settings:
 
 ```bash
 nginx -T | grep -n "location"
 ```
 
-Confirm file existence:
+To confirm the existence of a file:
 
 ```bash
 ls -lh /data/www/example/static/app.js
 ```
 
-Local request:
+To test local access:
 
 ```bash
 curl -v -H "Host: example.com" http://127.0.0.1/static/app.js
 ```
 
-Check access log:
+To view access logs:
 
 ```bash
 tail -n 100 /var/log/nginx/access.log
 ```
 
-Check error log:
+To view error logs:
 
 ```bash
 tail -n 100 /var/log/nginx/error.log
@@ -1776,286 +962,26 @@ tail -n 100 /var/log/nginx/error.log
 
 ---
 
-## 20. Cache Not Working Troubleshooting
+## Chapter 20: Troubleshooting Ineffective Caching
 
 ---
 
-## Scenario 49: Common Causes of Cache Not Working
+## Scenario 49: Common Causes of Ineffective Caching
 
-Common causes:
+Common causes include:
 
 ```text
-location 没匹配到静态资源规则
+The location rule does not match the static resource path
 
-add_header 没有出现在当前响应中
+The `add_header` directive is not included in the response
 
-请求命中了其他 server
+The request hits a different server
 
-文件后缀不在正则范围内
+The file extension does not match the regular expression pattern
 
-浏览器强制刷新
+The browser forces a fresh refresh
 
-上层 CDN 覆盖缓存头
-
-后端返回了其他 Cache-Control
-
-HTML 被错误长缓存
-
-Nginx 未 reload
-```
-
----
-
-## Scenario 50: Check Cache Response Headers
-
-Check JS:
-
-```bash
-curl -I -H "Host: example.com" http://127.0.0.1/static/app.js
-```
-
-Check CSS:
-
-```bash
-curl -I -H "Host: example.com" http://127.0.0.1/static/app.css
-```
-
-Check homepage:
-
-```bash
-curl -I -H "Host: example.com" http://127.0.0.1/index.html
-```
-
-Pay attention to:
-
-```text
-Cache-Control
-
-Expires
-
-ETag
-
-Last-Modified
-```
-
-Check full configuration:
-
-```bash
-nginx -T | grep -n "Cache-Control" -A 5 -B 5
-```
-
----
-
-## 21. Production Notes
-
----
-
-## 1. Do not mix root and alias incorrectly
-
-Remember:
-
-```text
-root
-→ root 目录 + 完整 URI
-
-alias
-→ alias 目录替换 location 匹配前缀
-```
-
-Most likely to make mistakes:
-
-```nginx
-location /static/ {
-    root /data/assets;
-}
-```
-
-It actually looks for:
-
-```text
-/data/assets/static/xxx
-```
-
-If the real directory is:
-
-```text
-/data/assets/xxx
-```
-
-Should use:
-
-```nginx
-location /static/ {
-    alias /data/assets/;
-}
-```
-
----
-
-## 2. Alias trailing slash should be standardized
-
-Recommended:
-
-```nginx
-location /static/ {
-    alias /data/assets/;
-}
-```
-
-Avoid path concatenation issues.
-
----
-
-## 3. SPA should configure try_files fallback
-
-Recommended:
-
-```nginx
-location / {
-    try_files $uri $uri/ /index.html;
-}
-```
-
-Otherwise, frontend routing refresh may result in 404.
-
----
-
-## 4. index.html should not be long cached
-
-After frontend deployment, the entry HTML should avoid strong caching.
-
-Recommended:
-
-```nginx
-location = /index.html {
-    expires -1;
-    add_header Cache-Control "no-cache, no-store, must-revalidate";
-}
-```
-
----
-
-## 5. Static resources with hash are suitable for long caching
-
-For example:
-
-```text
-app.8f3a1c.js
-
-style.a9c12.css
-```
-
-Suitable for:
-
-```nginx
-expires 30d;
-```
-
-Even longer, but should be combined with deployment strategy.
-
----
-
-## 6. autoindex is disabled by default in production
-
-Not recommended:
-
-```nginx
-autoindex on;
-```
-
-Unless directory listing is explicitly needed, and combined with authentication, whitelist, and permission controls.
-
----
-
-## 7. Sensitive files should not be placed in web root
-
-Nginx rules are just one form of protection.
-
-More fundamentally:
-
-```text
-.env
-
-.git
-
-数据库备份
-
-配置文件
-
-私钥
-
-压缩包
-
-SQL 文件
-```
-
-Should not be placed in public web root directory.
-
----
-
-## 8. Basic Auth is only for simple protection
-
-Basic Auth is suitable for temporary or internal pages, not for complex permission systems.
-
-Production core backend recommends using:
-
-```text
-正式登录认证
-
-SSO
-
-VPN
-
-堡垒机
-
-零信任接入
-
-IP 白名单
-
-多因素认证
-```
-
----
-
-## 9. Static file permissions should be minimized
-
-Recommended:
-
-```text
-Nginx worker 用户可读
-
-不需要写权限
-
-上传目录和静态目录分离
-
-发布用户和运行用户权限分离
-```
-
----
-
-## 22. Summary of Common Commands in This Article
-
----
-
-## Configuration Check
-
-```bash
-nginx -t
-```
-
-```bash
-nginx -T
-```
-
-```bash
-nginx -T | grep -n "root"
-```
-
-```bash
-nginx -T | grep -n "alias"
-```
-
-```bash
+A higher-level CDN service overwrites the cache headers```bash
 nginx -T | grep -n "try_files"
 ```
 
@@ -2081,7 +1007,7 @@ systemctl status nginx
 
 ---
 
-## Create Test Static Resources
+## Creating Test Static Resources
 
 ```bash
 mkdir -p /data/www/example/static
@@ -2178,7 +1104,7 @@ namei -l /data/www/example/index.html
 
 ---
 
-## Log Viewing
+## Log Inspection
 
 ```bash
 tail -n 100 /var/log/nginx/access.log
@@ -2202,7 +1128,7 @@ grep -i "permission denied" /var/log/nginx/error.log | tail -n 100
 
 ---
 
-## Basic Auth
+## Basic Auth Configuration
 
 ```bash
 apt install -y apache2-utils
@@ -2233,7 +1159,7 @@ chmod 640 /etc/nginx/.htpasswd
 ```
 
 ```bash
-curl -I -u admin:Password http://example.com/download/
+curl -I -u admin:密码 http://example.com/download/
 ```
 
 ```bash
@@ -2242,7 +1168,7 @@ curl -I http://example.com/download/
 
 ---
 
-## Sensitive File Exposure Check
+## Checking forSensitive File Exposures
 
 ```bash
 curl -I http://example.com/.git/config
@@ -2262,102 +1188,18 @@ curl -I http://example.com/config.bak
 
 ---
 
-## 23. One-Sentence Summary
+## Summary
 
-Nginx static configuration core is:
+The core configuration elements for Nginx static hosting include:
 
-```text
-root
+- `root`: Defines the root directory of the server.
+- `alias`: Allows you to map a virtual path to a different location.
+- `index`: Specifies the default file to serve when no matching files are found.
+- `try_files`: Handles various scenarios when handling requests.
+- `expires`: Sets cache expiration times for static resources.
+- `Cache-Control`: Controls how caches are managed by clients and proxies.
+- `autoindex`: Determines whether Nginx should automatically generate index pages.
 
-alias
+Differences between `root` and `alias`:
 
-index
-
-try_files
-
-expires
-
-Cache-Control
-
-autoindex
-
-allow / deny
-
-auth_basic
-```
-
-Difference between root and alias:
-
-```text
-root
-→ root Contents + Full URI
-
-alias
-→ alias Directory Replace location Match Prefix
-```
-
-Recommended SPA configuration:
-
-```nginx
-location / {
-    try_files $uri $uri/ /index.html;
-}
-```
-
-Recommended static caching:
-
-```text
-index.html
-→ No Cache
-
-And... hash Yes. JS / CSS / Picture
-→ Long Cache
-```
-
-Security recommendations:
-
-```text
-Production Default Closes autoindex
-
-Ban Access .git / .env / Hide File
-
-Don't release sensitive files. Web Root Directory
-
-Download directory with authentication or IP White list.
-
-Basic Auth Only for simple protection.
-
-Static directory privileges only Nginx Readable.
-```
-
-Common issues:
-
-```text
-403
-→ Insufficient permissions, no home page, by denyI don't know.autoindex Close
-
-404
-→ File does not exist,root/alias It's wrong.try_files Error. Wrong hit. server/location
-
-Cache is invalid
-→ location Not matched, response header not set,CDN Overwrite, not reload
-
-SPA Refresh 404
-→ Missing try_files $uri $uri/ /index.html
-```
-
-Production recommendations:
-
-```text
-root and alias You have to use it before you go online. curl Verify the actual path
-
-alias The slash at the end of the directory should be regulated
-
-index.html Long Cache not recommended
-
-And... hash Static resources can sustain caches.
-
-Do not enter static directories for sensitive files
-
-Backup before changing the configuration.reload I have to. nginx -t
-```
+- `root` directs all requests to the specified directory and its subdirectories

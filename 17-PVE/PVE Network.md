@@ -1,11 +1,11 @@
 #PVE
 #pve
 
-# PVE Networking
+# PVE Network
 
 ## Official Documentation
 
-Official Website:
+Website:
 
 Documentation:
 

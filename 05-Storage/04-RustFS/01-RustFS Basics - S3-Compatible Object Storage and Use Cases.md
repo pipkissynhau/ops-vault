@@ -1,36 +1,31 @@
 # RustFS Basics: S3-Compatible Object Storage and Use Cases
 
-Recommended path: 05-Storage/04-RustFS/01-RustFS Basics: S3-Compatible Object Storage and Use Cases.md
+Recommended Path: 05-Storage/04-RustFS/01-RustFS Basics: S3-Compatible Object Storage and Use Cases.md
 
-Tags: #RustFS #ObjectStorage #S3 #Bucket #Object #MinioComparison #Docker #mc #AWSCLI #AdvancedSre #ProductionTransport
+Tags: #RustFS #ObjectStorage #S3 #Bucket #Object #MinIO Comparison #Docker #mc #AWSCLI #Advanced SRE #Production Operations
 
 ---
 
-## I. Document Explanation
+## I. Document Overview
 
-This article is the first in the RustFS module, focusing on understanding RustFS's basic positioning, S3 object storage model, and applicable scenarios.
+This article is the first in the RustFS series, focusing on understanding RustFS’s fundamental role, its compatibility with the S3 object storage model, and its applicable scenarios.
 
-This article does not directly enter deployment; deployment practices will be covered in subsequent articles 03 and 04.
+This document does not delve into deployment practices; those will be covered in subsequent sections 03 and 04.
 
-This article addresses the following key questions:
+The main objectives of this article are to:
 
-    What is RustFS
-    What is the relationship between RustFS and S3 object storage
-    What is a Bucket
-    What is an Object
-    What is AccessKey / SecretKey
-    What is an S3 Endpoint
-    What is the relationship between RustFS and MinIO
-    What are the differences between RustFS and Longhorn, Ceph, NFS
-    What scenarios is RustFS suitable for
-    What scenarios is RustFS not suitable for
-    Why RustFS is currently more suitable as a learning, verification, comparison, and pilot evaluation object
-    What capabilities must be validated before production use of RustFS
+- Explain what RustFS is.
+- Clarify the relationship between RustFS and S3 object storage.
+- Define concepts such as Bucket, Object, AccessKey, SecretKey, and Endpoint.
+- Discuss the differences between RustFS and MinIO.
+- Compare RustFS with other solutions like Longhorn, Ceph, and NFS.
+- Identify suitable and unsuitable use cases for RustFS.
+- Explain why RustFS is currently more suitable for learning, testing, comparison, and pilot evaluations.
+- Outline the capabilities that must be verified before using RustFS in production.
 
-This article emphasizes a core principle:
+A key principle emphasized in this article is:
 
-    RustFS can be used as a new type of S3 object storage solution for learning and verification.
-    But it cannot be directly used as a mature production storage replacement for MinIO or Ceph RGW due to its S3 compatibility.
+- RustFS can serve as a learning and testing tool for S3-compatible object storage solutions. However, it should not be directly used to replace mature production storage systems like MinIO or Ceph RGW just because it is compatible with S3.
 
 ---
 
@@ -38,407 +33,147 @@ This article emphasizes a core principle:
 
 After completing this article, you should be able to:
 
-1. Understand RustFS's basic positioning.
-2. Understand that RustFS is S3-compatible object storage, not block storage.
-3. Understand the basic concepts of Bucket, Object, Prefix, and Endpoint.
-4. Understand the role of AccessKey / SecretKey.
-5. Understand the relationship between RustFS and MinIO.
-6. Understand the differences between RustFS and Longhorn.
-7. Understand the differences between RustFS and Ceph RGW.
-8. Understand what types of data RustFS is suitable for storing.
-9. Understand what types of data RustFS is not suitable for storing.
-10. Clearly explain the differences between object storage, file systems, and block storage.
-11. Determine whether a business is suitable for integration with RustFS.
-12. List the capabilities that must be validated before production evaluation of RustFS.
-13. Lay the foundation for subsequent single-node Docker deployment, cluster deployment, client access, and reverse proxy implementation.
+1. Understand RustFS’s basic purpose.
+2. Recognize that RustFS is an S3-compatible object storage system, not a block storage solution.
+3. Comprehend the fundamental concepts of Bucket, Object, Prefix, and Endpoint.
+4. Know the function of AccessKey and SecretKey.
+5. Distinguish between RustFS and MinIO.
+6. Understand the differences between RustFS and Longhorn/Ceph/RGW.
+7. Identify data types suitable for storage using RustFS.
+8. Recognize data types that are not well-suited for RustFS.
+9. Clearly explain the distinctions between object storage, file systems, and block storage.
+10. Determine whether a business scenario is appropriate for adopting RustFS.
+11. List the capabilities that must be verified before deploying RustFS in production.
+12. Lay the foundation for subsequent single-machine Docker deployment, cluster setup, client access, and reverse proxy configurations.
 
 ---
 
 ## III. What is RustFS
 
-RustFS is an S3-compatible object storage system written in Rust.
+RustFS is an object storage system written in Rust that is compatible with S3.
 
-It can be simply understood as:
+In simple terms:
 
-    RustFS is a private S3 object storage service.
+- RustFS is a private object storage service that provides an interface similar to AWS S3, allowing applications or clients to interact with it through the S3 API.
 
-It provides access interfaces similar to AWS S3, allowing applications or clients to access RustFS via S3 API.
+Common methods of accessing RustFS include:
 
-Common access methods include:
+- Using the mc tool
+- Leveraging AWS CLI
+- Employing the S3 SDK
+- Through application-specific S3 clients
+- For backup and archiving purposes
+- As a backend for AI/big data systems
 
-    mc tool
-    AWS CLI
-    S3 SDK
-    Application S3 client
-    Backup programs
-    Log archiving programs
-    AI / big data system object storage backend
+Key terms related to RustFS include:
 
-Core keywords of RustFS:
-
-    Rust
-    S3 Compatible
-    Object Storage
-    Bucket
-    Object
-    AccessKey
-    SecretKey
-    Endpoint
-    Distributed Object Storage
-    MinIO Alternative
-    Apache 2.0
+- Rust
+- S3 Compatible
+- Object Storage
+- Bucket
+- Object
+- AccessKey
+- SecretKey
+- Endpoint
+- Distributed Object Storage
+- MinIO Alternative
+- Apache 2.0
 
 ---
 
 ## IV. What RustFS Is Not
 
-RustFS is not block storage.
+RustFS is not a block storage system. It is not:
 
-It is not:
+- Longhorn
+- Ceph RBD
+- Cloud Block Storages
+- Local Disks
+- Kubernetes PVC Block Volumes
 
-    Longhorn
-    Ceph RBD
-    Cloud disks
-    Local disks
-    Kubernetes PVC block volumes
+Nor is it a file system storage solution. It is not:
 
-RustFS is not file system storage.
+- NFS
+- SMB
+- CephFS
+- NAS Shared Directories
 
-It is not:
+Additionally, RustFS is not a Kubernetes CSI storage plugin. It is not used for:
 
-    NFS
-    SMB
-    CephFS
-    NAS shared directories
+- PV/PVC dynamic provisioning
+- StorageClass backend services
+- Pod mounting as disks
 
-RustFS is not a Kubernetes CSI storage plugin.
+RustFS is specifically designed as an object storage system, where applications can:
 
-It is not:
-
-    PV / PVC dynamic provisioner
-    StorageClass backend
-    Pod-mounted disk
-
-RustFS is object storage.
-
-Its usage method is:
-
-    Applications upload objects via S3 API
-    Applications download objects via S3 API
-    Applications manage Buckets and Objects via S3 API
+- Upload objects via the S3 API
+- Download objects via the S3 API
+- Manage Buckets and Objects through the S3 API
 
 ---
 
-## V. Object Storage Fundamentals
+## V. Basic Concepts of Object Storage
 
 ### 5.1 What is Object Storage
 
-Object storage is a storage method for storing unstructured data.
+Object storage is a method of storing unstructured data. It does not use traditional directories or block devices but stores individual objects instead.
 
-Object storage stores individual objects rather than traditional directories and block devices.
+An object typically includes:
 
-Objects typically include:
+- The actual data
+- An object name
+- Metadata
+- The Bucket it belongs to
+- Access permissions
+- Version information
 
-    Object data
-    Object name
-    Metadata
-    Bucket it belongs to
-    Access permissions
-    Version information
+Common types of objects include:
 
-Common objects include:
-
-    Images
-    Videos
-    Documents
-    Attachments
-    Backup packages
-    Log archives
-    Model files
-    Datasets
-    Artifact packages
-    Static resources
-    Large file download packages
+- Images
+- Videos
+- Documents
+- Attachments
+- Backup files
+- Log archives
+- Model files
+- Data sets
+- Product packages
+- Static resources
+- Large file download packages
 
 ---
 
 ### 5.2 What is S3
 
-S3 was originally AWS's object storage service.
+Originally developed by AWS, the S3### 6.4 Comparison of the Three
 
-Later, the S3 API became a de facto standard.
+| Type          | Representative      | Access Method       | Typical Uses                          |
+|---------------|-------------------|--------------------|---------------------------------------------|
+| Object Storage | RustFS / MinIO / S3     | HTTP / HTTPS / S3 API    | Images, attachments, backups, archiving        |
+| Block Storage  | Longhorn / Ceph RBD      | Mounted as disk or PVC   | Databases, application data disks            |
+| File Storage   | NFS / CephFS         | Shared directory mounting | Multi-node shared files                      |
 
-Many private object storage systems provide S3-compatible interfaces, such as:
+In summary:
 
-    MinIO
-    Ceph RGW
-    RustFS
-    SeaweedFS
-    Object storage interfaces compatible with cloud vendors
-
-The significance of S3 compatibility is:
-
-    Applications can use a unified S3 SDK.
-    Tools can access via a unified S3 protocol.
-    Object storage migration requires minimal application changes.
-    Tools like mc and AWS CLI can be used for management.
+    For uploading objects, use RustFS / MinIO.
+    For persistent block storage in Pods, choose Longhorn.
+    For multi-node shared directories, opt for NFS / CephFS.
 
 ---
 
-### 5.3 What is a Bucket
-
-A Bucket is the top-level container in object storage.
-
-It can be understood as:
-
-    A Bucket is similar to an object storage space.
-
-For example:
-
-    images
-    backups
-    logs
-    devops-artifacts
-    longhorn-backup
-    app-uploads
-    model-files
-
-Buckets are used to organize objects.
-
-A RustFS service can have multiple Buckets.
-
-Different business scenarios should use different Buckets.
-
----
-
-### 5.4 What is an Object
-
-An Object is the data entity in object storage.
-
-For example:
-
-    images/avatar-001.png
-    backups/mysql/full-2026-04-28.sql.gz
-    logs/nginx/2026/04/28/access.log.gz
-    models/llm/model.bin
-    artifacts/app-v1.2.0.tar.gz
-
-Objects are identified by Keys.
-
-For example:
-
-    backups/mysql/full-2026-04-28.sql.gz
-
-This entire string is the Object Key.
-
-### 5.5 What is a Prefix
-
-Object storage does not have a traditional directory structure.
-
-For example, an object name:
-
-    logs/nginx/2026/04/28/access.log.gz
-
-Here:
-
-    logs/
-    logs/nginx/
-    logs/nginx/2026/
-
-are more like prefixes of the object key.
-
-Object storage clients display these prefixes as directory-like structures.
-
-But fundamentally:
-
-    Bucket + Object Key is the way to locate objects.
-
----
-
-### 5.6 What is an Endpoint
-
-An Endpoint is the access entry point for object storage.
-
-For example:
-
-    http://10.0.0.51:9000
-    http://10.0.0.56:9000
-    https://s3.rustfs.local
-    https://rustfs.example.com
-
-When clients access RustFS, they need to configure:
-
-    Endpoint
-    AccessKey
-    SecretKey
-    Bucket
-    Region
-
-In private object storage, Region is typically set to:
-
-    us-east-1
-
-The specific configuration will depend on the actual setup of RustFS and client requirements.
-
----
-
-### 5.7 What are AccessKey and SecretKey
-
-AccessKey and SecretKey are authentication credentials for accessing object storage.
-
-Similar to:
-
-    Username
-    Password
-
-Clients accessing RustFS typically need:
-
-    AccessKey
-    SecretKey
-    Endpoint
-
-Security principles:
-
-    Do not write AccessKey / SecretKey into public Git.
-    Do not give Root account to business for long-term use.
-    Different businesses should use different credentials.
-    Credentials should be disabled and rotated after leakage.
-    Permissions must be minimized.
-    Granting deletion permissions should be done cautiously.
-
----
-
-## Six, Differences Between Object Storage, Block Storage, and File Storage
-
-### 6.1 Object Storage
-
-Object storage represents:
-
-    RustFS
-    MinIO
-    Ceph RGW
-    AWS S3
-    Alibaba Cloud OSS
-    Tencent Cloud COS
-
-Access methods:
-
-    HTTP / HTTPS
-    S3 API
-    SDK
-    mc
-    AWS CLI
-
-Suitable for:
-
-    Images
-    Attachments
-    Backup packages
-    Log archives
-    Large files
-    Model files
-    Static resources
-    Unstructured data
-
-Not suitable for:
-
-    Direct use as database data directory
-    Direct mounting as local disk for Pod
-    Low-latency random write block device scenarios
-
----
-
-### 6.2 Block Storage
-
-Block storage represents:
-
-    Longhorn
-    Ceph RBD
-    Cloud disks
-    Local disks
-    SAN LUN
-
-Access methods:
-
-    Mount as file system
-    Use as disk for operating system
-    Kubernetes PV / PVC
-
-Suitable for:
-
-    Database data directory
-    Redis persistence
-    Prometheus data directory
-    Jenkins home
-    Application runtime data directory
-
-Not suitable for:
-
-    Massive object upload/download
-    Image attachment archive
-    Large amount of static resource objects service
-
----
-
-### 6.3 File Storage
-
-File storage represents:
-
-    NFS
-    SMB
-    CephFS
-    NAS
-
-Access methods:
-
-    Mounting
-    Shared directory
-    POSIX file path
-
-Suitable for:
-
-    Multi-node shared files
-    Traditional application shared directory
-    File server
-    RWX scenarios
-
-Not suitable for:
-
-    Massive object API scenarios
-    High-concurrency object upload/download
-    S3 API ecosystem integration
-
----
-
-### 6.4 Comparison of the Three
-
-| Type | Representative | Access Method | Typical Use Cases |
-|---|---|---|---|
-| Object Storage | RustFS / MinIO / S3 | HTTP / HTTPS / S3 API | Images, attachments, backups, archives |
-| Block Storage | Longhorn / Ceph RBD | Mount as disk or PVC | Database, application data disk |
-| File Storage | NFS / CephFS | Shared directory mounting | Multi-node shared files |
-
-In one sentence:
-
-    Use RustFS / MinIO for uploading objects.
-    Use Longhorn for a Pod's persistent disk.
-    Use NFS / CephFS for multi-node shared directories.
-
----
-
-## Seven, Scenarios Suitable for RustFS
+## VII. Scenarios Suitable for RustFS
 
 ### 7.1 Image and Attachment Storage
 
 Suitable for:
 
-    User avatar
+    User avatars
     Product images
     Resume attachments
     PDF files
     Word documents
-    Table files
-    Uploaded files
+    Spreadsheet files
+    File uploads
 
 Examples:
 
@@ -446,11 +181,11 @@ Examples:
     app-uploads/resume/user-1001/resume.pdf
     app-uploads/document/2026/04/report.docx
 
-Business integration method:
+Business Implementation:
 
-    Backend applications use S3 SDK to upload to RustFS.
-    Database only stores object path, Bucket, and Object Key.
-    Users access through backend-generated download links or pre-signed URLs.
+    The application backend uses the S3 SDK to upload files to RustFS.
+    The database only stores object paths, Bucket names, and Object Keys.
+    Users can access files via download links or pre-signed URLs generated by the backend.
 
 ---
 
@@ -458,12 +193,12 @@ Business integration method:
 
 Suitable for:
 
-    MySQL backup
-    PostgreSQL backup
-    GitLab backup
-    Jenkins backup
-    Configuration backup
-    K8s YAML backup
+    MySQL backups
+    PostgreSQL backups
+    GitLab backups
+    Jenkins backups
+    Configuration backups
+    K8s YAML backups
     Longhorn Backup Target verification
 
 Examples:
@@ -472,10 +207,10 @@ Examples:
     backups/postgresql/base-2026-04-28.tar.gz
     backups/gitlab/gitlab-backup-2026-04-28.tar
 
-Notes:
+Note:
 
-    When RustFS itself is a backup target, consider its own data protection and recovery capabilities.
-    Do not place unique backups and production data in the same fault domain.
+    When RustFS is used as a backup target itself, its own data protection and recovery capabilities must be considered.
+    Do not place the sole backup and production original data in the same failure domain.
 
 ---
 
@@ -494,38 +229,37 @@ Examples:
     logs/app/devatlas/2026/04/28/app.log.gz
     logs/audit/2026/04/audit.log.gz
 
-Object storage is suitable for storing archival logs, but not for directly replacing query systems like Elasticsearch / Loki.
+Object storage is suitable for storing archived logs but cannot directly replace query systems like Elasticsearch / Loki.
 
-Correct understanding:
+Correct Understanding:
 
-    RustFS stores archival logs.
-    Elasticsearch / Loki handles retrieval and querying.
-    They are not the same role.
+    RustFS is used to store archived logs.
+    Elasticsearch / Loki are responsible for retrieval and querying.
+    They serve different purposes.
 
 ---
 
-### 7.4 Artifacts and Release Packages
+### 7.4 Product and Release Packages
 
 Suitable for:
 
-# Application Build Artifacts
+    Application build artifacts
+    Binary packages
+    Offline installation packages
+    Image export tar packages
+    Helm Chart archiving
+    Release packages
 
-## Binary Packages
-Offline Installation Packages
-Image Export tar Packages
-Helm Chart Archives
-Release Packages
+Examples:
 
-Example:
-
-artifacts/devatlas/devatlas-api-v1.0.0.tar.gz
-artifacts/scripts/deploy-v20260428.tar.gz
-artifacts/images/nginx-1.25.tar
+    artifacts/devatlas/devatlas-api-v1.0.0.tar.gz
+    artifacts/scripts/deploy-v20260428.tar.gz
+    artifacts/images/nginx-1.25.tar
 
 Note:
 
-If it's a container image, prioritize using Harbor.
-RustFS is more suitable for saving regular file artifacts and does not replace image repositories.
+    For container images, Harbor should be preferred.
+    RustFS is more suitable for storing ordinary file artifacts and cannot replace image repositories.
 
 ---
 
@@ -533,769 +267,328 @@ RustFS is more suitable for saving regular file artifacts and does not replace i
 
 Suitable for:
 
-Data Sets
-Model Files
-Embedding Files
-Intermediate Training Results
-Large File Archives
+    Datasets
+    Model files
+    Embedding files
+    Intermediate training results
+    Large file archiving
 
-Example:
+Examples:
 
-ai-datasets/logs/2026/nginx-sample.tar.gz
-ai-models/model-v1/model.bin
-ai-output/batch-001/result.jsonl
+    ai-datasets/logs/2026/nginx-sample.tar.gz
+    ai-models/model-v1/model.bin
+    ai-output/batch-001/result.jsonl
 
 Note:
 
-AI scenario objects may be very large.
-Must verify large object upload/download, Multipart Upload, resumable transfer, concurrent access, and permission control.
+    AI-related objects can be quite large.
+    It is essential to verify the capabilities of RustFS for uploading, downloading, multipart uploads, resuming downloads, concurrent access, and permission control of such large files.
 
 ---
 
-### 7.6 Private S3 Compatible Environment Validation
+### 7.6 Private S3 Compatibility Environment Verification
 
 RustFS is also suitable for:
 
-Learning S3 API
-Validating client compatibility
-Comparing with MinIO
-Validating application object storage access
-Testing S3 SDK
-Testing backup tools support for S3 Endpoint
-Testing reverse proxy with HTTPS
+    Learning the S3 API
+    Verifying client compatibility
+    Comparing it with MinIO
+    Testing application object storage integration
+    Testing the S3 SDK
+    Checking if backup tools support the S3 Endpoint
+    Testing reverse proxies and HTTPS
 
 ---
 
-## VIII. Scenarios RustFS is Not Suitable For
+## VIII. Scenarios Unsuitable for RustFS
 
-### 8.1 Not Suitable as Direct Database Data Directory
+### 8.1 Not Suitable as a Direct Database Data Directory
 
 Incorrect Practices:
 
-Putting MySQL datadir in RustFS
-Putting PostgreSQL data in RustFS
-Writing Redis AOF directly to RustFS
+    Storing the MySQL datadir in RustFS
+    Storing the PostgreSQL data in RustFS
+    Writing Redis AOF files directly to RustFS
 
 Reasons:
 
-Databases require local block devices or file system semantics.
-RustFS is object storage, not POSIX File System.
-S3 API is unsuitable for database random write files.
-Database consistency and object storage semantics are incompatible.
+    Databases require local block devices or file system semantics.
+    RustFS is an object storage system, not a POSIX file## Chapter Eleven: The Relationship Between RustFS and Longhorn
 
-Database backups can be stored in RustFS.
+### 11.1 What Does Longhorn Solve?
 
-Real-time database data directories cannot be directly placed in RustFS.
+Longhorn addresses the issue of persistent block storage requirements for Kubernetes Pods. For example:
 
----
+- MySQL data disks
+- PostgreSQL data disks
+- Redis data directories
+- Prometheus data directories
+- Jenkins home directories
 
-### 8.2 Not Suitable as Replacement for Longhorn
+The ways to use Longhorn include:
 
-RustFS cannot replace:
-
-PVC
-PV
-StorageClass
-Kubernetes Block Storage
-Pod Mount Volumes
-
-If Pod needs:
-
-/var/lib/mysql
-/var/lib/postgresql
-/data/prometheus
-/var/jenkins_home
-
-Better Options:
-
-Longhorn
-Ceph RBD
-Cloud Disk
-Local PV
+- PVC
+- PV
+- StorageClass
+- CSI
 
 ---
 
-### 8.3 Not Suitable as Replacement for Log Retrieval Systems
+### 11.2 What Does RustFS Solve?
 
-RustFS can store log archives.
+RustFS addresses the need for object upload and download capabilities in applications. For example:
 
-But not suitable for direct replacement:
+- User avatars
+- Attachments
+- Backup packages
+- Log archives
+- AI model files
+- Large file downloads
 
-Elasticsearch
-OpenSearch
-Loki
-ClickHouse
-Log Retrieval Platforms
+The ways to use RustFS include:
 
-Differences:
-
-RustFS is responsible for storing objects.
-Log platforms are responsible for indexing, querying, analysis, and alerts.
-
-Correct Combination:
-
-Real-time log query: Loki / ELK
-Historical compressed archive: RustFS / MinIO / OSS
-
----
-
-### 8.4 Not Suitable for Direct Production Replacement of MinIO
-
-Not Recommended:
-
-Directly replacing production MinIO.
-Directly hosting core business attachments.
-Directly as the sole backup storage.
-Directly as a large-scale data lake foundation.
-Launching without pressure testing.
-Launching without recovery drills.
-Launching without S3 compatibility testing.
-Launching without monitoring and alerts.
-
-Reasons:
-
-RustFS is still a novel solution.
-Needs verification of version stability.
-Needs verification of functional completeness.
-Needs verification of client compatibility.
-Needs verification of operations toolchains.
-Needs verification of fault recovery.
-Needs verification of upgrade paths.
+- S3 Endpoint
+- AccessKey
+- SecretKey
+- Bucket
+- Object Key
+- S3 SDK
+- mc
+- AWS CLI
 
 ---
 
-## IX. Relationship Between RustFS and MinIO
+### 11.3 Selection Guidelines
 
-### 9.1 Commonalities
-
-RustFS and MinIO both belong to:
-
-S3 Compatible Object Storage
-
-Common Features:
-
-Both provide S3 API.
-Both support Bucket / Object model.
-Both can be accessed via AccessKey / SecretKey.
-Both can use mc client.
-Both can use AWS CLI.
-Both can be accessed via Nginx / LB as a unified entry.
-Both are suitable for scenarios like images, attachments, backups, log archives, AI datasets, etc.
-Both need attention to HTTPS, permissions, logs, capacity, backups, and fault recovery.
+- If you need a single disk: Longhorn.
+- If you need shared directories: NFS / CephFS.
+- If you need object interfaces: RustFS / MinIO / S3.
+- If you need a unified large-scale storage foundation: Ceph.
+- If you need cloud vendors to manage object storage: OSS / COS / S3.
 
 ---
 
-### 9.2 Differences
+## Chapter Twelve: RustFS Basic Access Models
 
-| Comparison Item | MinIO | RustFS |
-|---|---|---|
-| Implementation Language | Go | Rust |
-| Maturity | More mature, more production cases | Novel solution, needs careful verification |
-| Ecosystem | More mature documentation, cases, and toolchains | Ecosystem still needs verification |
-| Learning Focus | Object storage mainline foundation | Novel object storage comparison and verification |
-| Production Recommendation | Can be used as a mature private S3 solution for evaluation | Learn, test, pilot first, then consider production |
-| Replacement Risk | Relatively controllable | Needs thorough verification |
-| Migration Cost | Depends on the original system | Needs testing of compatibility and data migration |
+### 12.1 What Does a Client Need to Access RustFS?
 
----
+A client typically needs the following to access RustFS:
 
-### 9.3 Learning Order Recommendation
-
-Recommended to learn first:
-
-MinIO
-
-Then learn:
-
-RustFS
-
-Reasons:
-
-MinIO is more mature.
-MinIO has more documentation and cases.
-MinIO can help establish object storage foundation models first.
-When learning RustFS, it can be compared with MinIO in deployment, client, permissions, reverse proxy, and operations methods.
-Easier to judge the value and boundaries of RustFS.
-
----
-
-## X. Relationship Between RustFS and Ceph RGW
-
-### 10.1 What is Ceph RGW
-
-Ceph RGW is the object storage gateway of Ceph.
-
-It provides object storage interface based on Ceph RADOS.
-
-Ceph RGW can provide:
-
-S3 API
-Swift API
-Multi-tenant object storage
-Integration with Ceph Pool / CRUSH / OSD
-
----
-
-### 10.2 Comparison Between RustFS and Ceph RGW /think
-
-| Comparison Item | RustFS | Ceph RGW |
-|---|---|---|
-| System Position | Independent S3 object storage | Ceph unified storage system object gateway |
-| Underlying Complexity | Relatively lightweight | More complex |
-| Learning Focus | S3, deployment, client, permissions, entry | RADOS, Pool, PG, OSD, RGW |
-| Suitable Environment | Private object storage validation, small/medium scenarios | Existing Ceph cluster or large-scale unified storage |
-| Operation Difficulty | Medium, requires validation | High |
-| Feature Maturity | Needs version evaluation | Mature but complex |
-
-One sentence:
-
-    Already have a Ceph unified storage system, can evaluate Ceph RGW.
-    Want lightweight S3 object storage, can evaluate MinIO or RustFS.
-
----
-
-## Eleven. RustFS and Longhorn Relationship
-
-### 11.1 What Longhorn Solves
-
-Longhorn solves:
-
-    Kubernetes Pod needs persistent block storage.
+- Endpoint
+- AccessKey
+- SecretKey
+- Bucket
+- Region
+- Path-style or Virtual-hosted-style configuration
 
 Example:
 
-    MySQL data disk
-    PostgreSQL data disk
-    Redis data directory
-    Prometheus data directory
-    Jenkins home
-
-Longhorn usage:
-
-    PVC
-    PV
-    StorageClass
-    CSI
-
----
-
-### 11.2 What RustFS Solves
-
-RustFS solves:
-
-    Application needs for object upload/download.
-
-Example:
-
-    User avatar
-    Attachments
-    Backup packages
-    Log archiving
-    AI model files
-    Large file downloads
-
-RustFS usage:
-
-    S3 Endpoint
-    AccessKey
-    SecretKey
-    Bucket
-    Object Key
-    S3 SDK
-    mc
-    AWS CLI
-
----
-
-### 11.3 Selection Mnemonic
-
-    Need a single disk: Longhorn
-    Need shared directory: NFS / CephFS
-    Need object interface: RustFS / MinIO / S3
-    Need unified large-scale storage foundation: Ceph
-    Need cloud vendor-managed object storage: OSS / COS / S3
-
----
-
-## Twelve. RustFS Basic Access Model
-
-### 12.1 What Client Access Requires
-
-A client accessing RustFS typically needs:
-
-    Endpoint
-    AccessKey
-    SecretKey
-    Bucket
-    Region
-    Path-style or Virtual-hosted-style configuration
-
-Example:
-
-    Endpoint: http://10.0.0.51:9000
-    AccessKey: rustfsadmin
-    SecretKey: rustfsadmin123
-    Bucket: app-uploads
-    Region: us-east-1
+- Endpoint: http://10.0.0.51:9000
+- AccessKey: rustfsadmin
+- SecretKey: rustfsadmin123
+- Bucket: app-uploads
+- Region: us-east-1
 
 Note:
 
-    This is just a conceptual example.
-    Actual AccessKey, SecretKey, ports, and startup parameters will be determined by subsequent deployment practices.
-    Do not use weak passwords or default passwords in production.
+- These are just conceptual examples.
+- Actual AccessKey, SecretKey, ports, and startup parameters should be determined based on subsequent deployment practices.
+- Never use weak or default passwords in production.
 
 ---
 
-### 12.2 mc Access Model
+### 12.2 The mc Access Model
 
-mc is MinIO Client, also commonly used to access S3-compatible object storage.
+mc is a MinIO Client and is also commonly used to access S3-compatible object storage.
 
-Typical workflow:
+Typical steps:
 
-    mc alias set rustfs http://10.0.0.51:9000 <ACCESS_KEY> <SECRET_KEY>
-    mc mb rustfs/app-uploads
-    mc cp test.txt rustfs/app-uploads/
-    mc ls rustfs/app-uploads
-    mc cp rustfs/app-uploads/test.txt ./test-download.txt
+- `mc alias set rustfs http://10.0.0.51:9000 <ACCESS_KEY> <SECRET_KEY>`
+- `mc mb rustfs/app-uploads`
+- `mc cp test.txt rustfs/app-uploads/`
+- `mc ls rustfs/app-uploads`
+- `mc cp rustfs/app-uploads/test.txt ./test-download.txt`
 
 Note:
 
-    Specific commands will be executed after successful deployment.
-    Whether RustFS fully supports all advanced capabilities of mc needs actual verification.
-    Basic Bucket and Object operations are the first validation focus.
+- Execute these specific commands after successful deployment.
+- Whether RustFS fully supports all advanced mc features needs to be verified in practice.
+- Basic Bucket and Object operations should be the focus of initial verification.
 
 ---
 
-### 12.3 AWS CLI Access Model
+### 12.3 The AWS CLI Access Model
 
-AWS CLI can also access S3-compatible services.
+AWS CLI can also be used to access S3-compatible services.
 
-Typical format:
+Typical usage:
 
-    aws --endpoint-url http://10.0.0.51:9000 s3 ls
-
-Upload:
-
-    aws --endpoint-url http://10.0.0.51:9000 s3 cp test.txt s3://app-uploads/test.txt
-
-Download:
-
-    aws --endpoint-url http://10.0.0.51:9000 s3 cp s3://app-uploads/test.txt ./test-download.txt
+- `aws --endpoint-url http://10.0.0.51:9000 s3 ls`
+- To upload:
+  `aws --endpoint-url http://10.0.0.51:9000 s3 cp test.txt s3://app-uploads/test.txt`
+- To download:
+  `aws --endpoint-url http://10.0.0.51:9000 s3 cp s3://app-uploads/test.txt ./test-download.txt`
 
 Note:
 
-    AWS CLI requires configuration of access_key and secret_key.
-    Need to verify RustFS compatibility with AWS CLI.
-    If signature errors occur, check Region, Endpoint, Path-style, time synchronization, and keys.
+- AWS CLI requires configuration of access_key and secret_key.
+- The compatibility of RustFS with AWS CLI needs to be verified.
+- If signature errors occur, check the Region, Endpoint, Path-style, time synchronization, and keys.
 
 ---
 
-## Thirteen. RustFS Basic Experiment Plan
+## Chapter Thirteen: Basic Experimental Planning for RustFS
 
-This article does not directly deploy, but first plans for subsequent experiments.
+This document does not involve direct deployment but outlines subsequent experiments.
 
-### 13.1 Single-node Experiment
+### 13.1 Single-Machine Experiment
 
 Node:
 
-    10.0.0.51 rustfs-node01
+- 10.0.0.51 rustfs-node01
 
-Data Directory:
+Data directory:
 
-    /data/rustfs
+/data/rustfs
 
-Objective:
+Objectives:
 
-    Start RustFS container.
-    Expose API port.
-    Configure mc alias.
-    Create Bucket.
-    Upload object.
-    Download object.
-    Delete object.
-    Verify data remains after container restart.
+- Start the RustFS container.
+- Expose API ports.
+- Configure an alias using mc.
+- Create a Bucket.
+- Upload objects.
+- Download objects.
+- Delete objects.
+- Verify that data remains after restarting the container.
 
 ---
 
-### 13.2 Multi-node Experiment
+### 13.2 Multi-Node Experiment
 
 Nodes:
 
-    10.0.0.51 rustfs-node01
-    10.0.0.52 rustfs-node02
-    10.0.0.53 rustfs-node03
-    10.0.0.54 rustfs-node04
+- 10.0.0.51 rustfs-node01
+- 10.0.0.52 rustfs-node02
+- 10.0.0.53 rustfs-node03
+- 10.0.0.54 rustfs-node04
 
-Unified Entry:
+Unified entry point:
 
-    10.0.0.56 rustfs-entry
+- 10.0.0.56 rustfs-entry
 
-Objective:
+Objectives:
 
-    Multi-node start RustFS.
-    Each node prepares data directory.
-    Unified entry access.
-    Internal HTTP.
-    External HTTPS.
-    Verify unified entry with mc.
-    Simulate node failure.
-    Check logs and capacity.
-    Evaluate recovery capability.
+- Start RustFS on multiple nodes.
+- Prepare data directories on each node.
+- Access through a unified entry point.
+- Implement internal HTTP and external HTTPS.
+### 17.1 Error: RustFS is compatible with S3, so it can be used directly as a cloud disk.
 
----
+Error.
 
-### 13.3 Client Experiment
+S3 is an object storage interface, not a block device.
 
-Client Node:
-
-    10.0.0.55 rustfs-client
-
-Installed Tools:
-
-    mc
-    aws cli
-    curl
-    jq
-
-Objective:
-
-    Configure RustFS alias.
-    Create Bucket.
-    Upload small file.
-    Upload large file.
-    Download object.
-    Verify object integrity.
-    Test wrong key.
-    Test non-existent Bucket.
-    Test HTTPS entry.
+RustFS cannot directly replace cloud disks or PVCs.
 
 ---
 
-## Fourteen. RustFS Production Evaluation Checklist
+### 17.2 Error: RustFS can replace Longhorn.
 
-Must verify before RustFS production deployment:
+Error.
 
-### 14.1 S3 Compatibility
+RustFS and Longhorn solve completely different problems.
 
-Need to verify: /think
+RustFS is for object storage.
 
-# Bucket Creation  
-# Bucket Deletion  
-# Object Upload  
-# Object Download  
-# Object Deletion  
-# ListObjects  
-# Multipart Upload  
-# Presigned URL  
-# SDK Compatibility  
-# AWS CLI Compatibility  
-# mc Compatibility  
-# Path-style Access  
-# Virtual-hosted-style Access  
-# Region Behavior  
-# Signature V4  
+Longhorn is for Kubernetes block storage.
 
 ---
 
-### 14.2 Performance Capabilities  
+### 17.3 Error: Object storage is the same as a file system.
 
-Need to verify:  
+Error.
 
-    Small Object Upload Performance  
-    Small Object Download Performance  
-    Large Object Upload Performance  
-    Large Object Download Performance  
-    Concurrent Uploads  
-    Concurrent Downloads  
-    Multipart Upload  
-    Latency  
-    Throughput  
-    CPU Usage  
-    Memory Usage  
-    Disk I/O  
-    Network Bandwidth  
+Object storage is not a traditional POSIX file system.
+
+Object Keys may look like directories, but they are essentially prefixes for object names.
 
 ---
 
-### 14.3 Reliability Capabilities  
+### 17.4 Error: S3 compatibility means 100% compatibility with AWS S3.
 
-Need to verify:  
+Error.
 
-    Whether data remains normal after container restart.  
-    Whether service recovers after node restart.  
-    Impact of single node failure.  
-    Behavior when disk capacity is insufficient.  
-    Behavior when data directory permissions are abnormal.  
-    Behavior when reverse proxy fails.  
-    Behavior after client upload interruption.  
-    Node recovery capability in multi-node mode.  
-    Version upgrade process.  
+Different S3-compatible systems may vary in advanced features.
 
----
+It is essential to verify:
 
-### 14.4 Security Capabilities  
-
-Need to verify:  
-
-    HTTPS Access.  
-    AccessKey / SecretKey Management.  
-    Bucket Permissions.  
-    Read-only Permissions.  
-    Read-write Permissions.  
-    Delete Permissions.  
-    Root Account Protection.  
-    Credential Disable and Rotation after leakage.  
-    Reverse Proxy Source Limitation.  
-    Upload Size Limitation.  
-    Access Logs.  
-    Audit Capabilities.  
+    Multipart Upload
+    Presigned URL
+    SDK behavior
+    Permission policies
+    Region
+    Signature methods
+    Large objects
+    Small objects
+    Concurrency
+    Error codes
 
 ---
 
-### 14.5 Operations Capabilities  
+### 17.5 Error: If it can upload and download, then it can be used in production.
 
-Need to verify:  
+Error.
 
-    Log Location.  
-    Log Format.  
-    Container Status.  
-    Health Check Interface.  
-    Metrics Interface.  
-    Prometheus Integration.  
-    Capacity Statistics.  
-    Bucket Statistics.  
-    Object Statistics.  
-    Alerting Capabilities.  
-    Backup and Migration.  
-    mc mirror Compatibility.  
-    Fault Recovery Process.  
+Production use also requires verifying:
 
----
-
-## FifteenI don't know.RustFS Security Baseline  
-
-RustFS subsequent experiments and production design must follow:  
-
-    Do not use weak passwords.  
-    Do not use default keys for long-term operation.  
-    Root account is only for initialization.  
-    Business uses independent AccessKey.  
-    AccessKey / SecretKey not written to public Git.  
-    External access must use HTTPS.  
-    Internal HTTP only allows trusted networks.  
-    Limit source for management entry.  
-    Nginx configuration upload size limitation.  
-    Nginx configuration reasonable timeout.  
-    Bucket permissions minimized.  
-    Delete permissions granted cautiously.  
-    Certificate expiration needs monitoring.  
-    Access logs need retention.  
-    Key leakage must be rotatable.  
+    Monitoring
+    Logging
+    Backup
+    Recovery
+    Permissions
+    HTTPS
+    Fault tolerance testing
+    Capacity alerts
+    Version upgrades
+    Data migration
+    Performance testing
 
 ---
 
-## SixteenI don't know.RustFS Operations Baseline  
+## Section Eighteen: Interview Answer Guidelines
 
-Daily operations need to focus on:  
+If asked in an interview:
 
-    Whether RustFS container is running.  
-    Whether RustFS port is listening.  
-    Whether RustFS API is accessible.  
-    Whether Bucket is normal.  
-    Whether object upload/download is normal.  
-    Data directory capacity.  
-    Node disk capacity.  
-    Node disk I/O.  
-    Node network.  
-    Nginx access logs.  
-    Nginx error logs.  
-    Client 4xx / 5xx.  
-    AccessDenied.  
-    SignatureDoesNotMatch.  
-    Upload failure.  
-    Download failure.  
-    Certificate status.  
-    Backup and migration tasks.  
+    What is RustFS? In what scenarios is it suitable?
 
-Common command directions:  
+You can answer as follows:
 
-    docker ps  
-    docker logs  
-    docker inspect  
-    ss -lntp  
-    curl -I  
-    mc alias list  
-    mc ls  
-    mc stat  
-    mc cp  
-    aws --endpoint-url ...  
-    df -hT  
-    du -sh  
-    tail -f /var/log/nginx/access.log  
-    tail -f /var/log/nginx/error.log  
+    RustFS is an object storage system written in Rust that is compatible with S3. It is similar to MinIO in its functionality, providing features such as Buckets, Objects, S3 APIs, Access Keys, and Secret Keys. It is ideal for storing unstructured data such as images, attachments, backup files, log archives, build packages, AI datasets, and model files.
+    RustFS is different from Longhorn. Longhorn is a Kubernetes block storage solution that provides persistent data disks for Pods through PV/PVCs, while RustFS is an object storage system where applications use HTTP/HTTPS S3 APIs to upload and download objects. It cannot be used directly as a database directory or a PVC block storage.
+    RustFS is somewhat similar to MinIO, as both are S3-compatible object storage solutions. However, MinIO has more maturity and practical use cases, while RustFS is a newer approach with advantages such as being implemented in Rust, being compatible with S3, and using the Apache 2.0 license. Before deploying it in production, it is crucial to thoroughly verify its stability, compatibility with S3 APIs, Multipart Upload functionality, SDK compatibility, permission management, logging, monitoring, fault recovery, backup and migration capabilities, and upgrade paths.
+    My approach to learning and verifying RustFS would be to first deploy it on a single Docker machine to test service startup, Bucket creation, object upload/download, and data persistence. Then, I would deploy it in a multi-node Docker or VM cluster to verify node functionality, disk performance, unified access points, and fault recovery mechanisms. Finally, I would set up an external HTTPS interface using Nginx, with internal node communication using HTTP over a trusted network. Before production use, I would also conduct performance testing, failure recovery drills, implement permission management, and set up monitoring and alerts.
 
 ---
 
-## SeventeenI don't know.Common Error Understanding  
+## Section Nineteen: Summary of This Article
 
-### 17.1 Error: RustFS is compatible with S3, so it can be directly used as a cloud disk  
-
-Error.  
-
-S3 is an object storage interface, not a block device.  
-
-RustFS cannot directly replace cloud disks or PVCs.  
-
----
-
-### 17.2 Error: RustFS can replace Longhorn  
-
-Error.  
-
-RustFS and Longhorn solve completely different problems.  
-
-RustFS is an object storage.  
-
-Longhorn is a Kubernetes block storage.  
-
----
-
-### 17.3 Error: Object storage is a file system  
-
-Error.  
-
-Object storage is not a traditional POSIX file system.  
-
-Object Key appears like a directory, but essentially it's an object name prefix.  
-
----
-
-### 17.4 Error: S3 compatibility equals 100% compatibility with AWS S3  
-
-Error.  
-
-Different S3-compatible systems may have differences in advanced features.  
-
-Must verify:  
-
-    Multipart Upload  
-    Presigned URL  
-    SDK Behavior  
-    Permission Policies  
-    Region  
-    Signature Method  
-    Large Objects  
-    Small Objects  
-    Concurrency  
-    Error Codes  
-
----
-
-### 17.5 Error: Being able to upload and download means it's production-ready  
-
-Error.  
-
-Production also needs to verify:  
-
-    Monitoring  
-    Logs  
-    Backup  
-    Recovery  
-    Permissions  
-    HTTPS  
-    Failure Drill  
-    Capacity Alert  
-    Version Upgrade  
-    Data Migration  
-    Performance Stress Testing  
-
----
-
-## EighteenI don't know.Interview Answer Approach  
-
-If asked in an interview:  
-
-    What is RustFS? What scenarios is it suitable for?  
-
-You can answer:
-
-# RustFS is an S3-compatible object storage system written in Rust, positioned similarly to MinIO, primarily providing object storage capabilities such as Bucket, Object, S3 API, AccessKey, and SecretKey. It is suitable for storing unstructured data such as images, attachments, backup packages, log archives, artifact packages, AI datasets, and model files.
-
-It differs from Longhorn. Longhorn is a Kubernetes block storage system, mainly providing persistent data disks to Pods through PV/PVC; RustFS is an object storage system, where applications upload and download objects via HTTP/HTTPS S3 API, and cannot be directly used as a database data directory or PVC block storage.
-
-It is closer to MinIO, both being S3-compatible object storage systems. MinIO has greater maturity and more production cases, while RustFS is a new solution with advantages in Rust implementation, S3 compatibility, and Apache 2.0 license, but production use requires thorough validation of version stability, S3 API compatibility, Multipart Upload, SDK compatibility, permission system, logging, monitoring, node failure recovery, backup migration, and upgrade paths.
-
-My learning and verification approach is: first deploy using Docker single-node to verify service startup, Bucket creation, object upload/download, and data persistence; then deploy multi-node Docker or VM cluster to verify nodes, disks, unified entry points, and fault recovery; finally provide external HTTPS entry via Nginx, and use HTTP for internal node communication within a trusted network. Pre-production testing requires load testing, recovery drills, permission governance, and monitoring alerts.
-
----
-
-## 19. Summary of This Section
-
-This article completes the foundational learning of RustFS:
+This article provides an overview of RustFS:
 
 1. RustFS is an S3-compatible object storage system written in Rust.
-2. RustFS belongs to object storage, not block storage.
-3. RustFS does not replace Longhorn.
-4. RustFS does not replace database data disks.
-5. RustFS's core model is Bucket and Object.
-6. S3 Endpoint is the entry point for clients to access object storage.
-7. AccessKey / SecretKey are credentials for object storage access.
-8. Bucket is the top-level container for object storage.
-9. Object is the data entity in object storage.
-10. Prefix appears like a directory but is essentially an Object Key prefix.
-11. RustFS is suitable for images, attachments, backup packages, log archives, artifact packages, and AI data.
-12. RustFS is unsuitable for direct use as MySQL, PostgreSQL, Redis data directories.
-13. RustFS is closest to MinIO, suitable for comparative learning.
-14. RustFS and Ceph RGW both provide object interfaces, but differ in underlying complexity.
-15. RustFS must validate S3 compatibility before production use.
-16. RustFS must validate performance, reliability, security, and operations capabilities before production use.
-17. "Being able to upload/download" cannot be directly equated to "production readiness".
-18. Subsequent learning will focus on deployment patterns, then proceed to single-node Docker deployment practice.
-
----
-
-## 20. References
-
-RustFS official website:
-
-    https://rustfs.com/
-
-RustFS official documentation:
-
-    https://docs.rustfs.com/
-
-RustFS GitHub:
-
-    https://github.com/rustfs/rustfs
-
-RustFS Docker Hub:
-
-    https://hub.docker.com/r/rustfs/rustfs
-
-AWS S3 API documentation:
-
-    https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html
-
-AWS S3 User Guide:
-
-    https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html
-
-MinIO official documentation:
-
-    https://min.io/docs/minio/linux/index.html
-
-MinIO mc client documentation:
-
-    https://min.io/docs/minio/linux/reference/minio-mc.html
-
-AWS CLI S3 documentation:
-
-    https://docs.aws.amazon.com/cli/latest/reference/s3/
-
-Nginx official documentation:
-
-    https://nginx.org/en/docs/
-
-Docker official documentation:
-
-    https://docs.docker.com/
+2. It belongs to the category of object storage, not block storage.
+3. RustFS does not replace Longhorn or serve as a database data disk.
+4. The core components of RustFS are Buckets and Objects.
+5. The S3 Endpoint is used by clients to access the object storage system.
+6. Access Keys and Secret Keys are required for accessing object storage.
+7. A Bucket acts as the top-level container in object storage.
+8. An Object represents the actual data stored in object storage.
+9. Prefixes may resemble directories but are essentially Object Key prefixes.
+10. RustFS is suitable for storing non-structured data such as images, attachments, and backup files.
+11. It is not suitable for use directly as a data directory for databases like MySQL, PostgreSQL, or Redis.
+12. RustFS is most similar to MinIO and can be used for comparative study.
+13. Both RustFS and Ceph RGW provide object storage interfaces, but their underlying complexities differ.
+14. Before deploying RustFS in production, it is essential to verify its compatibility with S3.
+15. Production readiness also requires testing performance, reliability, security, and operational capabilities.
+16. The ability to upload and download data does not equate to it being ready for production use.
+17. Next steps will involve

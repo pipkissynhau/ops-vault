@@ -1,153 +1,124 @@
-# 05-Processes and systemd Service Troubleshooting
+# 05 - Process and systemd Service Troubleshooting
 
-#Linux #Transport #TheBarrier. #Process #systemd #systemctl #journalctl #ServiceManagement #ProcessStatus #FaultLocation.
+# Linux # Operations # Troubleshooting # Processes # systemd # systemctl # journalctl # Service Management # Process Status # Fault Location
 
 ---
 
 ## Recommended Path
 
-01-Linux Foundation and Host Maintenance/01-Host Troubleshooting/05-Processes and systemd Service Troubleshooting.md
+01-Linux Basics and Host Operations/01-Host Troubleshooting/05-Process and systemd Service Troubleshooting.md
 
 ---
 
-## One: Document Overview
+## I. Document Description
 
-This document organizes commands related to **process and systemd service troubleshooting** on Linux hosts.
+This document compiles commands related to **process and systemd service troubleshooting** on Linux hosts.
 
-Key focus areas include:
+Key points include:
 
-- View processes
-- Sort processes by CPU/memory
-- View process tree
-- Find specific processes
-- View process startup command
-- View process working directory
-- View files opened by process
-- View process status
-- Zombie processes
-- D state processes
-- Terminate processes
-- View systemd service status
-- Start/stop/restart/reload services
-- Boot-up management
-- View failed services
-- View service logs
-- `systemctl`
-- `journalctl`
-- `ps`
-- `pstree`
-- `pgrep`
-- `pidof`
-- `kill`
-- `lsof`
+- Viewing processes
+- Sorting processes by CPU/memory
+- Viewing process trees
+- Finding specific processes
+- Checking process startup commands
+- Viewing process working directories
+- Listing files opened by processes
+- Monitoring process status
+- Identifying zombie processes
+- D-state processes
+- Terminating processes
+- Checking systemd service status
+- Starting/stopping/reloading/restarting services
+- Managing automatic startup at boot
+- Investigating failed services
+- Reviewing service logs
+- Using `systemctl`, `journalctl`, `ps`, `pstree`, `pgrep`, `pidof`, `kill`, `lsof`
 
 Goals:
 
-- Quickly determine if a process exists
-→ Locate which service the process belongs to
-→ View process resource usage
-→ Determine if a service failed to start
-→ View service logs
-→ Distinguish between process issues and systemd service issues
-→ Safely handle abnormal processes and services
+- Quickly determine if a process exists.
+- Identify which service a process belongs to.
+- Check process resource usage.
+- Determine if a service failed to start.
+- Review service logs.
+- Distinguish between process issues and systemd service problems.
+- Safely handle abnormal processes and services.
 
 ---
 
-## Two: Process and Service Troubleshooting Approach
+## II. General Approach to Process and Service Troubleshooting
 
-When a Linux host has service anomalies, do not only check ports or directly restart.
+When a service on a Linux host encounters an issue, don’t just focus on ports or restart the system immediately.
 
 Recommended sequence:
 
 ```text
-Confirmation of the existence of services
-
-→ View systemd Service Status
-
-→ View service logs
-
-→ Can not open message
-
-→ View process resource occupancy
-
-→ View process startup command
-
-→ View process work directories and open files
-
-→ Whether the service failed to start up, the process went off abnormally, was under-resourced or was wrongly configured
-
-→ Then decide. reload / restart / stop / kill
+Confirm if the service exists.
+→ Check the systemd service status.
+→ Review service logs.
+→ Verify if the process exists.
+→ Evaluate process resource usage.
+→ Examine the process startup command.
+→ Check the process working directory and opened files.
+→ Determine whether the issue is due to a failed service start, abnormal process exit, insufficient resources, or configuration errors.
+→ Then decide whether to reload/restart/stop/kill the service.
 ```
 
-Common troubleshooting flow:
+Common troubleshooting steps:
 
 ```text
-systemctl status Service Name
-
-→ journalctl -u Service Name
-
-→ ps / pgrep / pidof Check process
-
-→ top / ps Sort View Resources
-
-→ lsof See file or port occupation
-
-→ By reason
+systemctl status service_name
+→ journalctl -u service_name
+→ ps/pgrep/pidof to find the process
+→ top/ps to sort processes by resource usage
+→ lsof to check file or port usage
+→ Take appropriate action based on the findings.
 ```
 
 ---
 
-## Three: Relationship Between Processes and Services
+## III. The Relationship Between Processes and Services
 
-Many business components in Linux can be viewed from both process and service perspectives.
+Many Linux components can be viewed from both process and service perspectives.
 
-For example Nginx:
+For example, Nginx:
 
 ```text
-systemd Service Name
+systemd service_name
 → nginx.service
-
-Process Name
+Process name
 → nginx
-
 Port
-→ 80 / 443
-
-Profile
+→ 80/443
+Configuration file
 → /etc/nginx/nginx.conf
 ```
 
-Troubleshooting should not focus on only one dimension.
+Troubleshooting should consider multiple dimensions.
 
-For example:
+For instance:
 
 ```text
-systemctl status nginx Show active
+systemctl status nginx shows "active"
 ```
 
-Only indicates that systemd considers the service as running.
-
-Need to further confirm:
+This only indicates that systemd considers the service running. Further checks are needed:
 
 ```text
-Existence of the process
-
-Port listening
-
-Is the configuration correct?
-
-Whether the log is wrong
-
-Normality of operational visits
+Verify if the process exists.
+Check if the port is being listened on.
+Confirm if the configuration is correct.
+Review logs for errors.
+Ensure normal business access.
 ```
 
 ---
 
-## Four: ps - View Processes
+## IV. ps: Viewing Processes
 
 ---
 
-## Scenario 1: View Current System Processes
+## Scenario 1: Viewing Current System Processes
 
 ### Command
 
@@ -157,45 +128,36 @@ ps aux
 
 ### Purpose
 
-View all processes in the current system.
+Shows all current processes on the system.
 
 Common fields:
 
 ```text
 USER
-→ Process Own Users
-
+→ Process owner
 PID
 → Process ID
-
 %CPU
-→ CPU Usage
-
+→ CPU usage percentage
 %MEM
-→ Memory Usage
-
+→ Memory usage percentage
 VSZ
-→ Virtual Memory Size
-
+→ Virtual memory size
 RSS
-→ Actual occupancy of physical memory
-
+→ Actual physical memory usage
 STAT
-→ Process Status
-
+→ Process status
 START
-→ Start Time
-
+→ Start time
 TIME
-→ Cumulative CPU Time
-
+→ Total CPU time used
 COMMAND
-→ Start Command
+→ Command used to start the process
 ```
 
 ---
 
-## Scenario 2: View Processes with Parent Process
+## Scenario 2: Viewing Processes and Their Parent Processes
 
 ### Command
 
@@ -205,39 +167,32 @@ ps -ef
 
 ### Purpose
 
-`ps -ef` is more suitable for viewing parent-child process relationships.
+`ps -ef` is more useful for displaying parent-child process relationships.
 
 Common fields:
 
 ```text
 UID
-→ User
-
+→ User ID
 PID
 → Process ID
-
 PPID
-→ Parent Process ID
-
+→ Parent process ID
 C
-→ CPU Use
-
+→ CPU usage percentage
 STIME
-→ Start Time
-
+→ Start time
 TTY
 → Terminal
-
 TIME
-→ Cumulative CPU Time
-
+→ Total CPU time used
 CMD
-→ Command
+→ Command used to start the process
 ```
 
 ---
 
-## Scenario 3: View Processes Sorted by CPU
+## Scenario 3: Sorting Processes by CPU Usage
 
 ### Command
 
@@ -245,7 +200,7 @@ CMD
 ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%cpu | head
 ```
 
-View more:
+To view more results:
 
 ```bash
 ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%cpu | head -n 20
@@ -253,11 +208,11 @@ ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%cpu | head -n 20
 
 ### Purpose
 
-Quickly locate high CPU usage processes.
+Quickly identify processes with high CPU usage.
 
 ---
 
-## Scenario 4: View Processes Sorted by Memory
+## Scenario 4: Sorting Processes by Memory Usage
 
 ### Command
 
@@ -265,1217 +220,24 @@ Quickly locate high CPU usage processes.
 ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%mem | head
 ```
 
-View more:
+To view more results:
 
 ```bash
-ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%mem | head -n 20
-```
-
-### Purpose
-
-Quickly locate high memory usage processes.
-
----
-
-## Scenario 5: View Detailed Information of a Specific PID
-
-### Command
-
-```bash
-ps -fp PID
-```
-
-Example:
-
-```bash
-ps -fp 12345
-```
-
-### Purpose
-
-View detailed information of a specific process, including:
-
-```text
-Users
-
-Parent Process
-
-Start Time
-
-Start Command
-```
-
----
-
-## Five: Find Specific Processes
-
----
-
-## Scenario 6: Use grep to Find Processes
-
-### Command
-
-```bash
-ps -ef | grep nginx
-```
-
-### Note
-
-This is the most common way to find processes.
-
-However, it will also match `grep nginx` itself.
-
-You can filter like this:
-
-```bash
-ps -ef | grep nginx | grep -v grep
-```
-
----
-
-## Scenario 7: Use pgrep to Find Process PID
-
-### Command
-
-```bash
-pgrep nginx
-```
-
-Display process name and PID:
-
-```bash
-pgrep -a nginx
-```
-
-### Purpose
-
-Better suited for scripts and quick location than `ps | grep`.
-
----
-
-## Scenario 8: Use pidof to Find Process PID
-
-### Command
-
-```bash
-pidof nginx
-```
-
-### Purpose
-
-Find PID by process name.
-
-Suitable for:
-
-```text
-Quick find a service process ID
-```
-
----
-
-## Scenario 9: View Java Processes
-
-### Command
-
-```bash
-ps -ef | grep java | grep -v grep
-```
-
-Or:
-
-```bash
-pgrep -a java
-```
-
-### Note
-
-Java services often have long startup commands.
-
-You can combine with:
-
-```bash
-tr '\0' ' ' < /proc/PID/cmdline
-```
-
-To view full startup parameters.
-
----
-
-## Six: pstree - View Process Tree
-
----
-
-## Scenario 10: View Process Tree
-
-### Command
-
-```bash
-pstree
-```
-
-### Purpose
-
-View process parent-child relationships in tree structure.
-
-Suitable for determining:
-
-```text
-Who started a process?
-
-Whether a script has given birth to a child.
-
-Is there a multi-level subprocess in the service
-
-Which parent is the abnormal process?
-```
-
----
-
-## Scenario 11: Display PID in Process Tree
-
-### Command
-
-```bash
-pstree -p
-```
-
-### Purpose
-
-Display process tree and PID.
-
----
-
-## Scenario 12: View Specific Process Tree
-
-### Command
-
-```bash
-pstree -p PID
-```
-
-Example:
-
-```bash
-pstree -p 12345
-```
-
----
-
-## Scenario 13: What to Do if pstree is Not Installed
-
-Ubuntu/Debian:
-
-```bash
-apt install -y psmisc
-```
-
-RHEL/CentOS/Rocky/AlmaLinux:
-
-```bash
-yum install -y psmisc
-```
-
-Or:
-
-```bash
-dnf install -y psmisc
-```
-
----
-
-## Seven: /proc - View ProcessBottom Information
-
----
-
-## Scenario 14: View Process Startup Command
-
-### Command
-
-```bash
-cat /proc/PID/cmdline
-```
-
-Example:
-
-```bash
-cat /proc/12345/cmdline
-```
-
-Formatted output:
-
-```bash
-tr '\0' ' ' < /proc/12345/cmdline
-```
-
-### Purpose
-
-View full startup command of a process.
-
-Suitable for determining:
-
-```text
-Service Start Parameters
-
-Profile Path
-
-Java Start Parameter
-
-Python Script Path
-
-Directory of business processes
-```
-
----
-
-## Scenario 15: View Process Working Directory
-
-### Command
-
-```bash
-ls -l /proc/PID/cwd
-```
-
-Example:
-
-```bash
-ls -l /proc/12345/cwd
-```
-
-### Purpose
-
-View current working directory of a process.
-
-Suitable for determining:
-
-```text
-Which application directory the process belongs to
-
-Script started from which directory
-
-Whether the service runs from the abnormal directory
-```
-
----
-
-## Scenario 16: View Executable File of a Process
-
-### Command
-
-```bash
-ls -l /proc/PID/exe
-```
-
-Example:
-
-```bash
-ls -l /proc/12345/exe
-```
-
-### Purpose
-
-View the path of the binary file actually executed by the process.
-
----
-
-## Scenario 17: View Environment Variables of a Process
-
-### Command
-
-```bash
-cat /proc/PID/environ
-```
-
-Formatted output:
-
-```bash
-tr '\0' '\n' < /proc/PID/environ
-```
-
-### Purpose
-
-View environment variables of a process.
-
-Suitable for troubleshooting:
-
-```text
-Validity of environmental variables
-
-Which variables were read on service startup
-
-PATH Correct?
-
-JAVA_HOME Correct?
-
-Configure Center Address Correct
-```
-
-Note:
-
-```text
-Environmental variables may contain sensitive information and do not disclose it at will.
-```
-
----
-
-## Scenario 18: View Process Status
-
-### Command
-
-```bash
-cat /proc/PID/status
-```
-
-Example:
-
-```bash
-cat /proc/12345/status
-```
-
-### Key Fields
-
-```text
-Name
-→ Process Name
-
-State
-→ Process Status
-
-Pid
-→ Process ID
-
-PPid
-→ Parent Process ID
-
-Uid
-→ User ID
-
-Gid
-→ User Group ID
-
-VmRSS
-→ Permanent Memory
-
-Threads
-→ Threads
-```
-
----
-
-## Eight: Understanding Process Status
-
----
-
-## Scenario 19: STAT Field in ps
-
-View:
-
-```bash
-ps aux
-```
-
-Common process states:
-
-```text
-R
-→ Running, running or running
-
-S
-→ Sleeping, breaks your sleep
-
-D
-→ Uninterruptible sleepNo interruption of sleep.
-
-T
-→ StoppedStop!
-
-Z
-→ ZombieThe zombie process.
-
-I
-→ Idlekernel idle thread
-```
-
-Common additional flags:
-
-```text
-<
-→ High Priority
-
-N
-→ Low Priority
-
-L
-→ A page locked in memory
-
-s
-→ session leader
-
-l
-→ Multi-line
+ps -eo pid,ppid,user,cmd,%mem→ Multithreading
 
 +
-→ Front desk process group
+→ Foreground Process Group
 ```
+## Section 14: journalctl: Viewing Service Logs
 
 ---
 
-## Scenario 20: R State
-
-```text
-R
-→ Process is running, or waiting CPU Run
-```
-
-If many processes are in R state, it may indicate CPU run queue pressure.
-
-Continue to check:
-
-```bash
-top
-```
-
-```bash
-vmstat 1 5
-```
-
-Focus on:
-
-```text
-r
-```
-
----
-
-## Scenario 21: S State
-
-```text
-S
-→ Interrupted sleep
-```
-
-Many normal processes are in the S state.
-
-For example:
-
-```text
-Waiting for Network Request
-
-Waiting for user connection
-
-Waiting for a scheduled task
-
-Waiting for event to trigger
-```
-
-The S state itself is not necessarily a problem.
-
----
-
-## Scenario 22: D State
-
-```text
-D
-→ No interruption of sleep.
-```
-
-Commonly seen in:
-
-```text
-Disk IO Wait
-
-NFS Carton.
-
-Anomalous piece of equipment
-
-Storage anomaly
-
-File system anomaly
-```
-
-If a large number of D state processes appear, it usually indicates issues with IO or storage.
-
-Check D state processes:
-
-```bash
-ps -eo pid,ppid,user,stat,cmd | awk '$4 ~ /D/ {print}'
-```
-
-Continue checking kernel logs:
-
-```bash
-dmesg -T | tail -n 100
-```
-
-Check IO:
-
-```bash
-iostat -x 1 5
-```
-
----
-
-## Scenario 23: Z State Zombie Processes
-
-```text
-Z
-→ ZombieThe zombie process.
-```
-
-Zombie processes indicate:
-
-```text
-Subprocess has been withdrawn
-
-But the parent process has not recovered its exit status.
-```
-
-Check zombie processes:
-
-```bash
-ps aux | awk '$8 ~ /Z/ {print}'
-```
-
-Check parent process:
-
-```bash
-ps -o pid,ppid,stat,cmd -p PID
-```
-
-Check process tree:
-
-```bash
-pstree -p PPID
-```
-
-Handling approach:
-
-```text
-A few zombie processes may not be serious.
-
-There's a lot of zombie processes that indicate that the father's process may be problematic.
-
-It's usually the father process, not the zombie process itself.
-```
-
----
-
-## IX. lsof: View Open Files by Process
-
----
-
-## Scenario 24: View Files Opened by a Process
+## Scenario 47: Viewing Specific Service Logs
 
 ### Command
 
 ```bash
-lsof -p PID
-```
-
-Example:
-
-```bash
-lsof -p 12345
-```
-
-### Purpose
-
-View files, directories, sockets, etc. opened by a specific process.
-
-Suitable for troubleshooting:
-
-```text
-Which log file is the process writing?
-
-Which configuration file is occupied by the process
-
-Whether the process is still occupied deleted Documentation
-
-Whether the process opens a large number of files
-```
-
----
-
-## Scenario 25: View Which Process is Using a File
-
-### Command
-
-```bash
-lsof /path/to/file
-```
-
-Example:
-
-```bash
-lsof /var/log/app.log
-```
-
----
-
-## Scenario 26: View Processes Using a Directory
-
-### Command
-
-```bash
-lsof +D /data
-```
-
-### Purpose
-
-Suitable for troubleshooting failed unmounts:
-
-```text
-umount: target is busy
-```
-
----
-
-## Scenario 27: View Deleted File Usage
-
-### Command
-
-```bash
-lsof | grep deleted
-```
-
-### Purpose
-
-Troubleshoot:
-
-```text
-df Show disk full
-du Big file not found
-```
-
-Common causes:
-
-```text
-Large log file deleted
-But the process still occupies the handle.
-Space is not released.
-```
-
-Handling approach:
-
-```text
-Find the corresponding process
-→ Whether or not. reload / restart
-→ Release Document Thread
-```
-
-Note:
-
-```text
-Don't be direct. kill Production core process
-```
-
----
-
-## Scenario 28: What to Do if lsof is Not Installed
-
-Ubuntu/Debian:
-
-```bash
-apt install -y lsof
-```
-
-RHEL/CentOS/Rocky/AlmaLinux:
-
-```bash
-yum install -y lsof
-```
-
-Or:
-
-```bash
-dnf install -y lsof
-```
-
----
-
-## X. kill: Terminate Processes
-
----
-
-## Scenario 29: Gracefully Terminate a Process
-
-### Command
-
-```bash
-kill PID
-```
-
-Equivalent to sending:
-
-```text
-SIGTERM
-```
-
-Example:
-
-```bash
-kill 12345
-```
-
-### Notes
-
-`SIGTERM` requests the process to exit normally.
-
-In production environments, prefer using:
-
-```bash
-kill PID
-```
-
-Rather than directly using:
-
-```bash
-kill -9 PID
-```
-
----
-
-## Scenario 30: Forcefully Terminate a Process
-
-### Command
-
-```bash
-kill -9 PID
-```
-
-Example:
-
-```bash
-kill -9 12345
-```
-
-### Notes
-
-`kill -9` sends:
-
-```text
-SIGKILL
-```
-
-Which forcefully kills the process.
-
-Risks:
-
-```text
-Process cannot do cleanup
-
-Possible data unpaved
-
-It could lead to the locking of files.
-
-Possible disruption of operations
-
-It could destroy the scene.
-```
-
-Do not immediately use `kill -9` in production.
-
----
-
-## Scenario 31: Terminate by Process Name
-
-### Command
-
-```bash
-pkill Process Name
-```
-
-Example:
-
-```bash
-pkill nginx
-```
-
-Forcefully:
-
-```bash
-pkill -9 nginx
-```
-
-### Risks
-
-Killing processes by name may accidentally terminate multiple processes.
-
-Use with caution in production.
-
-Recommend checking first:
-
-```bash
-pgrep -a nginx
-```
-
-Before deciding to take action.
-
----
-
-## Scenario 32: Common Signals
-
-View signal list:
-
-```bash
-kill -l
-```
-
-Common signals:
-
-```text
-TERM
-→ Elegance.
-
-KILL
-→ Force Termination
-
-HUP
-→ Always used for reloading configuration
-
-INT
-→ Interrupt
-
-QUIT
-→ Exit and possible generation core
-```
-
----
-
-## XI. systemctl: Basic Service Management
-
----
-
-## Scenario 33: Check Service Status
-
-### Command
-
-```bash
-systemctl status Service Name
-```
-
-Example:
-
-```bash
-systemctl status nginx
-```
-
-Or:
-
-```bash
-systemctl status nginx.service
-```
-
-### Purpose
-
-Check service:
-
-```text
-Whether or not active
-
-Whether or not failed
-
-Main Process PID
-
-Recent Log
-
-Start Time
-
-Exit Code
-
-unit File Path
-```
-
----
-
-## Scenario 34: Start a Service
-
-### Command
-
-```bash
-systemctl start Service Name
-```
-
-Example:
-
-```bash
-systemctl start nginx
-```
-
----
-
-## Scenario 35: Stop a Service
-
-### Command
-
-```bash
-systemctl stop Service Name
-```
-
-Example:
-
-```bash
-systemctl stop nginx
-```
-
----
-
-## Scenario 36: Restart a Service
-
-### Command
-
-```bash
-systemctl restart Service Name
-```
-
-Example:
-
-```bash
-systemctl restart nginx
-```
-
-### Notes
-
-Restarting will interrupt current processes.
-
-In production environments, confirm:
-
-```text
-Operational impact
-
-Is there a lead?
-
-Whether to allow short interruptions
-
-Changed Window
-```
-
-Before proceeding.
-
----
-
-## Scenario 37: Reload Service Configuration
-
-### Command
-
-```bash
-systemctl reload Service Name
-```
-
-Example:
-
-```bash
-systemctl reload nginx
-```
-
-### Notes
-
-`reload` typically has less impact than `restart`.
-
-Suitable for:
-
-```text
-Service supports smooth load configuration
-```
-
-But not all services support reload.
-
-Check:
-
-```bash
-systemctl status Service Name
-```
-
-Or check if the unit file defines `ExecReload`.
-
----
-
-## Scenario 38: reload-or-restart
-
-### Command
-
-```bash
-systemctl reload-or-restart Service Name
-```
-
-### Purpose
-
-If the service supports reload, perform reload.
-
-If not, perform restart.
-
-Still exercise caution in production as it may degrade to restart.
-
----
-
-## XII. systemctl: Boot Autostart Management
-
----
-
-## Scenario 39: Set Boot Autostart
-
-### Command
-
-```bash
-systemctl enable Service Name
-```
-
-Example:
-
-```bash
-systemctl enable nginx
-```
-
----
-
-## Scenario 40: Disable Boot Autostart
-
-### Command
-
-```bash
-systemctl disable Service Name
-```
-
-Example:
-
-```bash
-systemctl disable nginx
-```
-
----
-
-## Scenario 41: Check Boot Autostart Status
-
-### Command
-
-```bash
-systemctl is-enabled Service Name
-```
-
-Example:
-
-```bash
-systemctl is-enabled nginx
-```
-
-Possible results:
-
-```text
-enabled
-disabled
-static
-masked
-```
-
----
-
-## Scenario 42: Check if Service is Running
-
-### Command
-
-```bash
-systemctl is-active Service Name
-```
-
-Example:
-
-```bash
-systemctl is-active nginx
-```
-
-Possible results:
-
-```text
-active
-inactive
-failed
-activating
-deactivating
-```
-
----
-
-## XIII. View Service List and Failed Services
-
----
-
-## Scenario 43: View Running Services
-
-### Command
-
-```bash
-systemctl list-units --type=service --state=running
-```
-
----
-
-## Scenario 44: View All Services
-
-### Command
-
-```bash
-systemctl list-units --type=service --all
-```
-
----
-
-## Scenario 45: View Failed Services
-
-### Command
-
-```bash
-systemctl --failed
-```
-
-### Purpose
-
-Quickly view failed units in the current system.
-
-Common output:
-
-```text
-failed service
-failed mount
-failed timer
-```
-
----
-
-## Scenario 46: Reset Failed Status
-
-### Command
-
-```bash
-systemctl reset-failed
-```
-
-Reset specified service:
-
-```bash
-systemctl reset-failed Service Name
-```
-
-### Notes
-
-`reset-failed` only clears the failed status, not equivalent to fixing the issue.
-
-Before fixing, check logs:
-
-```bash
-journalctl -u Service Name
-```
-
----
-
-## XIV. journalctl: View Service Logs
-
----
-
-## Scenario 47: View Logs for a Specific Service
-
-### Command
-
-```bash
-journalctl -u Service Name
+journalctl -u service_name
 ```
 
 Example:
@@ -1486,12 +248,12 @@ journalctl -u nginx
 
 ---
 
-## Scenario 48: Real-time View Service Logs
+## Scenario 48: Realtime Viewing of Service Logs
 
 ### Command
 
 ```bash
-journalctl -u Service Name -f
+journalctl -u service_name -f
 ```
 
 Example:
@@ -1502,12 +264,12 @@ journalctl -u nginx -f
 
 ---
 
-## Scenario 49: View Recent Logs
+## Scenario 49: Viewing Recent Logs
 
 ### Command
 
 ```bash
-journalctl -u Service Name -n 100
+journalctl -u service_name -n 100
 ```
 
 Example:
@@ -1516,7 +278,7 @@ Example:
 journalctl -u nginx -n 100
 ```
 
-Real-time view of recent logs:
+For real-time viewing of recent logs:
 
 ```bash
 journalctl -u nginx -n 100 -f
@@ -1524,23 +286,23 @@ journalctl -u nginx -n 100 -f
 
 ---
 
-## Scenario 50: View Logs by Time
+## Scenario 50: Viewing Logs by Time
 
 ### Command
 
-View today's logs:
+Viewing today's logs:
 
 ```bash
 journalctl -u nginx --since today
 ```
 
-View recent 1 hour:
+Viewing the last 1 hour:
 
 ```bash
 journalctl -u nginx --since "1 hour ago"
 ```
 
-View logs for a specified time range:
+Viewing a specific time period:
 
 ```bash
 journalctl -u nginx --since "2026-04-25 10:00:00" --until "2026-04-25 11:00:00"
@@ -1548,7 +310,7 @@ journalctl -u nginx --since "2026-04-25 10:00:00" --until "2026-04-25 11:00:00"
 
 ---
 
-## Scenario 51: View Logs Since Last Boot
+## Scenario 51: Viewing Logs Since the Last Start
 
 ### Command
 
@@ -1556,7 +318,7 @@ journalctl -u nginx --since "2026-04-25 10:00:00" --until "2026-04-25 11:00:00"
 journalctl -b
 ```
 
-View logs for a specific service since last boot:
+Viewing logs for a specific service since the last start:
 
 ```bash
 journalctl -u nginx -b
@@ -1564,7 +326,7 @@ journalctl -u nginx -b
 
 ---
 
-## Scenario 52: View Logs from Previous Boot
+## Scenario 52: Viewing Logs from the Previous Start
 
 ### Command
 
@@ -1572,30 +334,28 @@ journalctl -u nginx -b
 journalctl -b -1
 ```
 
-View logs for a specific service during previous boot:
+To view logs of a certain service from the previous start:
 
 ```bash
 journalctl -u nginx -b -1
 ```
 
-Suitable for troubleshooting:
+This is useful for troubleshooting issues such as:
 
 ```text
-Why is the service unusual before system restart?
-
-Last Start Failed
-
-Log before and after machine abnormal restart
+Why did the service malfunction before the system restart?
+What were the reasons for the previous failed startup?
+Review the logs before and after the unexpected system reboot.
 ```
 
 ---
 
-## Scenario 53: Output Logs Without Pagination
+## Scenario 53: Viewing Logs Without Pagination
 
 ### Command
 
 ```bash
-journalctl -u Service Name --no-pager
+journalctl -u service_name --no-pager
 ```
 
 Example:
@@ -1606,24 +366,24 @@ journalctl -u nginx --no-pager
 
 ---
 
-## FifteenI don't know.systemd Unit File Troubleshooting
+## Section 15: Troubleshooting with systemd Unit Files
 
 ---
 
-## Scenario 54: View Service Unit File Path
+## Scenario 54: Checking the Path to the Service Unit File
 
 ### Command
 
 ```bash
-systemctl status Service Name
+systemctl status service_name
 ```
 
-The output typically shows the unit file path.
+The path to the unit file is usually displayed in the output.
 
 You can also use:
 
 ```bash
-systemctl cat Service Name
+systemctl cat service_name
 ```
 
 Example:
@@ -1634,37 +394,35 @@ systemctl cat nginx
 
 ### Purpose
 
-View the actual service configuration loaded by systemd.
+To view the actual service configuration loaded by systemd.
 
 ---
 
-## Scenario 55: Common Unit File Paths
+## Scenario 55: Common Path Locations for Unit Files
 
-Common paths:
+Common paths include:
 
 ```text
 /usr/lib/systemd/system/
-
 /lib/systemd/system/
-
 /etc/systemd/system/
 ```
 
-Description:
+Explanation:
 
 ```text
 /etc/systemd/system/
-→ Always for administrator custom or overwrite configuration
+→ Often used for administrators to customize or override configurations.
 
 /usr/lib/systemd/system/ or /lib/systemd/system/
-→ Regularly provided by packages
+→ Usually provided by software packages.
 ```
 
 ---
 
-## Scenario 56: Reload systemd After Modifying Unit
+## Scenario 56: Reloading systemd After Modifying a Unit File
 
-If you modify a unit file, execute:
+If you modify the unit file, you need to execute:
 
 ```bash
 systemctl daemon-reload
@@ -1673,23 +431,23 @@ systemctl daemon-reload
 Then restart the service:
 
 ```bash
-systemctl restart Service Name
+systemctl restart service_name
 ```
 
-Check status:
+Check the status:
 
 ```bash
-systemctl status Service Name
+systemctl status service_name
 ```
 
 ---
 
-## Scenario 57: View Service Dependencies
+## Scenario 57: Viewing Service Dependencies
 
 ### Command
 
 ```bash
-systemctl list-dependencies Service Name
+systemctl list-dependencies service_name
 ```
 
 Example:
@@ -1698,20 +456,20 @@ Example:
 systemctl list-dependencies nginx
 ```
 
-View reverse dependencies:
+To view reverse dependencies:
 
 ```bash
-systemctl list-dependencies --reverse Service Name
+systemctl list-dependencies --reverse service_name
 ```
 
 ---
 
-## Scenario 58: View Service Properties
+## Scenario 58: Viewing Service Properties
 
 ### Command
 
 ```bash
-systemctl show Service Name
+systemctl show service_name
 ```
 
 Example:
@@ -1720,7 +478,7 @@ Example:
 systemctl show nginx
 ```
 
-View specific property:
+To view a specific property:
 
 ```bash
 systemctl show nginx -p ExecStart
@@ -1736,7 +494,7 @@ systemctl show nginx -p Restart
 
 ---
 
-## SixteenI don't know.Service Startup Failure Troubleshooting
+## Section 16: Troubleshooting Service Startup Failures
 
 ---
 
@@ -1748,7 +506,7 @@ systemctl show nginx -p Restart
 systemctl start nginx
 ```
 
-Failed.
+Fails.
 
 Check:
 
@@ -1756,7 +514,7 @@ Check:
 systemctl status nginx
 ```
 
-Status may show:
+The status may show:
 
 ```text
 failed
@@ -1764,9 +522,9 @@ failed
 
 ---
 
-## Scenario 60: Service Startup Failure Troubleshooting Commands
+## Scenario 60: Commands for Troubleshooting Service Startup Failures
 
-### Troubleshooting Flow
+### Troubleshoot the Chain of Events
 
 ```bash
 systemctl status nginx
@@ -1776,402 +534,71 @@ systemctl status nginx
 journalctl -u nginx -n 100
 ```
 
-```bash
-journalctl -u nginx -f
-```
-
-Check if the configuration file is correct.
-
-Take Nginx as an example:
+journalIf a service is managed by systemd, it is not recommended to directly terminate the process and then start it manually. Instead, the following approach is advised:
 
 ```bash
-nginx -t
+systemctl restart service_name
 ```
 
-Check for port conflicts:
+Reasons:
 
-```bash
-ss -tunlp
-```
-
-Check for residual processes:
-
-```bash
-ps -ef | grep nginx | grep -v grep
-```
+- systemd can maintain the service state effectively.
+- It allows for configuration-based startup of services.
+- systemd keeps track of logs systematically.
+- It handles dependencies and manages restart strategies efficiently.
 
 ---
 
-## Scenario 61: Service Repeated Restarts
+## 3. Check Logs Before Restarting a Service
 
-### Check Status
-
-```bash
-systemctl status Service Name
-```
-
-Check logs:
+It is advisable to check the following before restarting a service:
 
 ```bash
-journalctl -u Service Name -n 200
-```
-
-Check unit configuration:
-
-```bash
-systemctl cat Service Name
-```
-
-Focus on:
-
-```text
-Restart
-RestartSec
-StartLimitBurst
-StartLimitIntervalSec
-ExecStart
-```
-
-Check properties:
-
-```bash
-systemctl show Service Name -p Restart
+systemctl status service_name
 ```
 
 ```bash
-systemctl show Service Name -p RestartSec
+journalctl -u service_name -n 100
 ```
+
+This helps prevent losing important information after a restart.
 
 ---
 
-## Scenario 62: Service Starts Very Slowly
+## 4. Use reload Instead of Restart When Possible
 
-Troubleshoot:
-
-```bash
-systemctl status Service Name
-```
+If a service supports smooth configuration reloading, it is better to use:
 
 ```bash
-journalctl -u Service Name -b
+systemctl reload service_name
 ```
 
-Check system startup time:
+Rather than:
 
 ```bash
-systemd-analyze
+systemctl restart service_name
 ```
 
-Check service startup time sorting:
+Reasons:
 
-```bash
-systemd-analyze blame
-```
-
-Check startup chain:
-
-```bash
-systemd-analyze critical-chain
-```
+- Reloading usually has less impact on the system.
+- Restarting will interrupt ongoing processes.
 
 ---
 
-## SeventeenI don't know.Common Troubleshooting Scenarios
+## 5. Determine the Impact Before Taking Action on a Process
+
+Before dealing with a process, it is essential to consider the following factors:
+
+- Which service the process belongs to.
+- Whether it is critical to business operations.
+- If there are any backups or automatic recovery mechanisms in place.
+- Whether notifications need to be sent to relevant parties.
+- Any required maintenance windows that may affect other services.
 
 ---
 
-## Scenario 63: Service Status is active, but Business is Abnormal
-
-### Possible Causes
-
-```text
-Service processes exist, but operational ports are not listening
-
-Service port listening local 127.0.0.1
-
-Profile loading error
-
-Dependency on services unusual
-
-Process card is dead.
-
-Log error
-
-Firewall or network issues
-
-Disk fill leads to write failure
-```
-
-### Troubleshooting Commands
-
-```bash
-systemctl status Service Name
-```
-
-```bash
-journalctl -u Service Name -n 100
-```
-
-```bash
-ps -ef | grep Service keyword | grep -v grep
-```
-
-```bash
-ss -tunlp
-```
-
-```bash
-df -h
-```
-
-```bash
-top
-```
-
----
-
-## Scenario 64: Service is inactive
-
-### Troubleshooting Commands
-
-```bash
-systemctl status Service Name
-```
-
-```bash
-journalctl -u Service Name -n 100
-```
-
-```bash
-systemctl is-enabled Service Name
-```
-
-Possible Causes:
-
-```text
-Service not started
-
-Service stopped manually.
-
-It's not on.
-
-Exit after service startup failed
-
-It's not service. systemd Management
-```
-
----
-
-## Scenario 65: Service is failed
-
-### Troubleshooting Commands
-
-```bash
-systemctl status Service Name
-```
-
-```bash
-journalctl -u Service Name -n 200
-```
-
-```bash
-systemctl cat Service Name
-```
-
-Common Causes:
-
-```text
-Profile Error
-
-Port Conflict
-
-Insufficient Permissions
-
-Reliance directory does not exist
-
-Environmental variables are missing
-
-Starting command error
-
-Disk Full
-
-Reliance on services not available
-```
-
----
-
-## Scenario 66: Service Exits Immediately After Startup
-
-Troubleshoot:
-
-```bash
-systemctl status Service Name
-```
-
-```bash
-journalctl -u Service Name -n 100
-```
-
-```bash
-systemctl cat Service Name
-```
-
-Common Causes:
-
-```text
-Program started later, but unit Type mismatch
-
-ExecStart Exit after execution
-
-The configuration error caused the application to exit
-
-Other Organiser
-
-Insufficient Permissions
-
-Environmental variables are missing
-```
-
----
-
-## Scenario 67: Service Configuration Changes Not Taking Effect
-
-Troubleshoot:
-
-```bash
-systemctl status Service Name
-```
-
-```bash
-systemctl cat Service Name
-```
-
-If you modified the unit file:
-
-```bash
-systemctl daemon-reload
-```
-
-Then:
-
-```bash
-systemctl restart Service Name
-```
-
-If you only modified application configuration, prioritize checking if the service supports reload:
-
-```bash
-systemctl reload Service Name
-```
-
-If not supported, consider restart.
-
----
-
-## EighteenI don't know.Production Handling Notes
-
----
-
-## 1. Do Not Immediately Use kill -9
-
-Priority order:
-
-```text
-systemctl stop Service Name
-
-→ kill PID
-
-→ kill -9 PID
-```
-
-`kill -9` Should be the last resort.
-
----
-
-## 2. Prefer Using systemctl to Manage systemd Services
-
-If the service is managed by systemd, it's not recommended to directly kill the process and manually start it.
-
-Recommended:
-
-```bash
-systemctl restart Service Name
-```
-
-Reason:
-
-```text
-systemd Maintain service status
-
-systemd I can press it. unit Configure Startup
-
-systemd Logging
-
-systemd Could handle dependency and restart strategy
-```
-
----
-
-## 3. Check Logs Before Restarting the Service
-
-Before restarting, it's recommended to check:
-
-```bash
-systemctl status Service Name
-```
-
-```bash
-journalctl -u Service Name -n 100
-```
-
-To avoid losing context after restart.
-
----
-
-## 4. Prefer reload Over restart
-
-If the service supports smooth configuration reload, prefer:
-
-```bash
-systemctl reload Service Name
-```
-
-Instead of:
-
-```bash
-systemctl restart Service Name
-```
-
-Reason:
-
-```text
-reload The impact is usually smaller.
-restart Could interrupt the current process
-```
-
----
-
-## 5. Confirm Impact Scope Before Handling Processes
-
-Before handling, confirm:
-
-```text
-Which service does the process belong to?
-
-Core business or not
-
-Is there a lead?
-
-Is there automatic pull-up?
-
-Need to inform the operator
-
-Whether windows need to be maintained
-```
-
----
-
-## NineteenI don't know.Common Commands in This Article
+## Summary of Common Commands
 
 ---
 
@@ -2194,12 +621,12 @@ ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%cpu | head
 ```
 
 ```bash
-ps -eo pid,ppid,user,cmd,%mem,%cpu --sort=-%mem | head
+ps -eo pid,ppid:user,cmd,%mem,%cpu --sort=-%mem | head
 ```
 
 ---
 
-## Process Search
+## Process Searching
 
 ```bash
 ps -ef | grep nginx
@@ -2223,7 +650,7 @@ pidof nginx
 
 ---
 
-## Process Tree
+## Process Tree Display
 
 ```bash
 pstree
@@ -2263,19 +690,23 @@ cat /proc/PID/status
 
 ---
 
-## Process Status
+## Process Status Checking
 
-Check D-state processes:
+To view processes in D-state:
 
 ```bash
 ps -eo pid,ppid,user,stat,cmd | awk '$4 ~ /D/ {print}'
 ```
 
-Check zombie processes:
+To identify zombie processes:
 
 ```bash
 ps aux | awk '$8 ~ /Z/ {print}'
 ```
+
+---
+
+## Opening Files
 
 ```bash
 lsof -p PID
@@ -2295,7 +726,7 @@ lsof | grep deleted
 
 ---
 
-## Ending Processes
+## Terminating Processes
 
 ```bash
 kill PID
@@ -2306,11 +737,11 @@ kill -9 PID
 ```
 
 ```bash
-pkill Process Name
+pkill process_name
 ```
 
 ```bash
-pkill -9 Process Name
+pkill -9 process_name
 ```
 
 ```bash
@@ -2319,51 +750,51 @@ kill -l
 
 ---
 
-## systemctl Service Management
+## systemd Service Management
 
 ```bash
-systemctl status Service Name
+systemctl status service_name
 ```
 
 ```bash
-systemctl start Service Name
+systemctl start service_name
 ```
 
 ```bash
-systemctl stop Service Name
+systemctl stop service_name
 ```
 
 ```bash
-systemctl restart Service Name
+systemctl restart service_name
 ```
 
 ```bash
-systemctl reload Service Name
+systemctl reload service_name
 ```
 
 ```bash
-systemctl reload-or-restart Service Name
+systemctl reload-or-restart service_name
 ```
 
 ```bash
-systemctl enable Service Name
+systemctl enable service_name
 ```
 
 ```bash
-systemctl disable Service Name
+systemctl disable service_name
 ```
 
 ```bash
-systemctl is-enabled Service Name
+systemctl is-enabled service_name
 ```
 
 ```bash
-systemctl is-active Service Name
+systemctl is-active service_name
 ```
 
 ---
 
-## Service List
+## Service Listing
 
 ```bash
 systemctl list-units --type=service --state=running
@@ -2382,214 +813,26 @@ systemctl reset-failed
 ```
 
 ```bash
-systemctl reset-failed Service Name
+systemctl reset-failed service_name
 ```
 
 ---
 
-## journalctl Logs
+## journalctl for Logs
 
 ```bash
-journalctl -u Service Name
-```
-
-```bash
-journalctl -u Service Name -f
+journalctl -u service_name
 ```
 
 ```bash
-journalctl -u Service Name -n 100
+journalctl -u service_name -f
 ```
 
 ```bash
-journalctl -u Service Name -n 100 -f
+journalctl -u service_name -n 100
 ```
 
 ```bash
-journalctl -u Service Name --since today
+journalctl -u service_name -n 100 -f
 ```
 
-```bash
-journalctl -u Service Name --since "1 hour ago"
-```
-
-```bash
-journalctl -u Service Name --since "2026-04-25 10:00:00" --until "2026-04-25 11:00:00"
-```
-
-```bash
-journalctl -b
-```
-
-```bash
-journalctl -u Service Name -b
-```
-
-```bash
-journalctl -b -1
-```
-
-```bash
-journalctl -u Service Name -b -1
-```
-
-```bash
-journalctl -u Service Name --no-pager
-```
-
----
-
-## Unit Files
-
-```bash
-systemctl cat Service Name
-```
-
-```bash
-systemctl daemon-reload
-```
-
-```bash
-systemctl list-dependencies Service Name
-```
-
-```bash
-systemctl list-dependencies --reverse Service Name
-```
-
-```bash
-systemctl show Service Name
-```
-
-```bash
-systemctl show Service Name -p ExecStart
-```
-
-```bash
-systemctl show Service Name -p MainPID
-```
-
-```bash
-systemctl show Service Name -p Restart
-```
-
----
-
-## Startup Time
-
-```bash
-systemd-analyze
-```
-
-```bash
-systemd-analyze blame
-```
-
-```bash
-systemd-analyze critical-chain
-```
-
----
-
-## Tool Installation
-
-Ubuntu / Debian Install psmisc:
-
-```bash
-apt install -y psmisc
-```
-
-RHEL / CentOS / Rocky / AlmaLinux Install psmisc:
-
-```bash
-yum install -y psmisc
-```
-
-Or:
-
-```bash
-dnf install -y psmisc
-```
-
-Ubuntu / Debian Install lsof:
-
-```bash
-apt install -y lsof
-```
-
-RHEL / CentOS / Rocky / AlmaLinux Install lsof:
-
-```bash
-yum install -y lsof
-```
-
-Or:
-
-```bash
-dnf install -y lsof
-```
-
----
-
-## Twenty. One-Line Summary
-
-The core of process and systemd service troubleshooting is:
-
-```text
-Look at the service. systemctl
-
-Look at the service log. journalctl
-
-Process exists. ps / pgrep / pidof
-
-Look at the process. pstree
-
-Look at the details of the process. /proc
-
-File occupancy. lsof
-```
-
-Service anomaly troubleshooting chain:
-
-```text
-systemctl status Service Name
-
-→ journalctl -u Service Name -n 100
-
-→ systemctl cat Service Name
-
-→ ps / pgrep Check process
-
-→ ss / lsof Check port and file
-
-→ Processing according to logs and status
-```
-
-Process anomaly troubleshooting chain:
-
-```text
-ps aux / ps -ef
-
-→ ps Sort Search CPU / Memory anomaly process
-
-→ ps -fp PID Read the details.
-
-→ /proc/PID/cmdline Look at the start-up order.
-
-→ /proc/PID/cwd Look at the work directory.
-
-→ lsof -p PID Look at the file.
-
-→ To determine if it's necessary. stop / restart / kill
-```
-
-Production recommendations:
-
-```text
-Don't come up. kill -9
-Do not read the log before restarting
-systemd Priority for managed services systemctl
-reload Priority restart
-Pre-process recognition of operational impact
-failed It's not just that. reset-failed
-```

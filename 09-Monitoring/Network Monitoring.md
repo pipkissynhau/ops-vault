@@ -1,10 +1,10 @@
-#Monitor
+# Monitoring
 
 # Network Monitoring
 
 ## Official Documentation
 
-Website:
+Official Website:
 
 Documentation:
 
@@ -12,7 +12,7 @@ GitHub:
 
 ## Overview
 
-## Principles
+## Principle
 
 ## Architecture
 

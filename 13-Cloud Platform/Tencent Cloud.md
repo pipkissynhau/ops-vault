@@ -1,10 +1,10 @@
-#CloudPlatform
+# Cloud Platform
 
 # Tencent Cloud
 
 ## Official Documentation
 
-Official website:
+Official Website:
 
 Documentation:
 

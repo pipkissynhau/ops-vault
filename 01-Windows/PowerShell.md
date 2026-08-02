@@ -5,7 +5,7 @@
 
 ## Official Documentation
 
-Official Website:
+Website:
 
 Documentation:
 

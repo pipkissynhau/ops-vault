@@ -1,6 +1,6 @@
 # Obsidian Database Usage Guide
 
-This document explains how to build "database views" in an Obsidian knowledge base to organize technical notes, Runbooks, and incident case content.
+This document explains how to create "database views" in the Obsidian knowledge base to organize technical notes, Runbooks, fault cases, and more.
 
 ---
 
@@ -8,54 +8,37 @@ This document explains how to build "database views" in an Obsidian knowledge ba
 
 Obsidian itself is not a traditional database system.
 
-Databases are typically implemented through:
+Databases are typically implemented through the following methods:
 
 1. Markdown tables
-    
-2. Tags (Tag)
-    
+2. Tags
 3. Metadata (Frontmatter)
-    
-4. Dataview Plugin
-    
+4. The Dataview plugin
 
-Recommended approach:
-
-```
-Dataview Plugin
-```
+The most recommended method is to use the **Dataview plugin**.
 
 ---
 
-# II. Installing Dataview Plugin
+# II. Installing the Dataview Plugin
 
 Steps:
 
 1. Open Settings
-    
-2. Community plugins
-    
+2. Choose Community plugins
 3. Browse
-    
-4. Search:
-    
-
+4. Search for:
 ```
 Dataview
 ```
+5. Install it and enable it.
 
-5. Install
-    
-6. Enable
-    
-
-After installation, you can create database views.
+Once installed, you can start creating database views.
 
 ---
 
 # III. Adding Metadata to Notes
 
-Add Frontmatter at the top of notes:
+Add Frontmatter at the top of your note:
 
 Example:
 
@@ -71,45 +54,43 @@ Meaning:
 
 |Field|Description|
 |---|---|
-|type|Technical type|
+|type|Technical category|
 |category|Classification|
 |status|Learning status|
 
 ---
 
-# IV. Creating a Database View
+# IV. Creating Database Views
 
 Create a new file:
 
 ```
-00-Transport architecture/Technical database.md
+00-Operational Architecture/Technology Database.md
 ```
 
-Write:
+Write in it:
 
-````markdown
+```markdown
 ```dataview
 table type, category, status
 from ""
 ```
-````
 
 Dataview will automatically scan all notes and generate a table.
 
 ---
 
-# V. Generating a Database by Tag
+# V. Generating Databases by Tag
 
-For example, viewing only Kubernetes technology:
+For example, to view only Kubernetes technology:
 
-````markdown
+```markdown
 ```dataview
 table file.link as Technology
 from #kubernetes
 ```
-````
 
-Sample output:
+Example output:
 
 |Technology|
 |---|
@@ -124,109 +105,103 @@ Sample output:
 
 For example, the Kubernetes directory:
 
-````markdown
+```markdown
 ```dataview
 table file.link
 from "04-Kubernetes"
 ```
-````
 
 ---
 
-# VII. Runbook Database
+# VII. Runbook Databases
 
 Create in the Runbook directory:
 
 ```
-20-Runbook/runbookDatabase.md
+20-Runbook/Runbook Database.md
 ```
 
-Write:
+Write in it:
 
-````markdown
+```markdown
 ```dataview
 table file.link as Runbook
 from "20-Runbook"
 ```
-````
 
 ---
 
-# VIII. Incident Case Database
+# VIII. Fault Case Databases
 
-Create in the incident case directory:
+Create in the fault case directory:
 
 ```
-19-Cases of failure/incidentDatabase.md
+19-Fault Cases/Incident Database.md
 ```
 
-Write:
+Write in it:
 
-````markdown
+```markdown
 ```dataview
 table file.link as Incident
-from "19-Cases of failure"
+from "19-Fault Cases"
 ```
-````
 
 ---
 
 # IX. Common Dataview Queries
 
-Viewing Kubernetes technology:
+View Kubernetes technology:
 
-````markdown
+```markdown
 ```dataview
 table file.link
 from #kubernetes
 ```
-````
 
-Viewing storage technology:
+View storage technologies:
 
-````markdown
+```markdown
 ```dataview
 table file.link
 from #storage
 ```
-````
 
-Viewing monitoring components:
+View monitoring components:
 
-````markdown
+```markdown
 ```dataview
 table file.link
 from #monitor
 ```
-````
 
 ---
 
 # X. Database Best Practices
 
-Recommended to create the following database pages:
+It is recommended to create the following database pages:
 
 ```
-00-Transport architecture/Technical maps.md
-04-Kubernetes/k8sDatabase.md
-02-Linux/linuxDatabase.md
-19-Cases of failure/incidentDatabase.md
-20-Runbook/runbookDatabase.md
+00-Operational Architecture/Technology Map.md
+04-Kubernetes/k8s Database.md
+02-Linux/Linux Database.md
+19-Fault Cases/Incident Database.md
+20-Runbook/Runbook Database.md
 ```
 
-This allows quick overview of the entire knowledge system.
+This way, you can quickly browse the entire knowledge system.
 
 ---
 
-# XI. Purpose of Database Pages
+# XI. The Role of Databases
 
 Database pages can be used for:
 
-```
+```markdown
 Technical index
-Technical Learning List
-RunbookList
-List of cases of failure
+Technical learning list
+Runbook list
+Fault case list
 ```
 
-As notes grow, the database will automatically update.
+As more notes are added, the database will automatically update.

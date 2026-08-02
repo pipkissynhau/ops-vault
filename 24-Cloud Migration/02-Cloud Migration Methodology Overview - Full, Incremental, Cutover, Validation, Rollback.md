@@ -1,0 +1,112 @@
+### 5. Understanding Rollback in One Sentence
+> Rollback is responsible for quickly restoring business operations to the source environment in the event of a migration failure.
+
+---
+
+## 8. Summary
+
+Cloud migration is a complex process involving multiple key phases and methodologies. By梳理 the core steps of full synchronization, incremental synchronization, cutover, validation, and rollback, we can ensure the smooth progress of migration projects and reduce potential risks. In practice, these methodologies need to be flexibly applied based on specific migration objectives and environments to ensure efficient, secure, and stable business migration.
+The source side must not be completely destroyed or become unrecoverable before the switch.  
+Typically, it is necessary to:  
+- Retain the original instance;  
+- Keep the original database;  
+- Preserve the original access configuration;  
+- Maintain the latest recoverable state of the source side.  
+
+#### Clearly Define the Failback Steps  
+Failback cannot be decided on the spot; steps must be written down in advance, such as:  
+- Stop writing to the target side;  
+- Switch back to the source side;  
+- Restart the service on the source side;  
+- Verify the status of the source side;  
+- Notify the team that services can be resumed.  
+
+### 5. What Is the Biggest Challenge in Failback?  
+#### New data has been generated on the target side  
+This is the most troublesome situation.  
+If new data has been written after switching to the target side, then during failback, you need to consider:  
+- Whether to discard the newly added data on the target side;  
+- Whether to synchronize the new data back to the source side;  
+- Whether short-term data rollback is allowed.  
+
+Therefore, in many migration plans, the observation period after the switch is crucial. During this period, strict control over write volume, permissions, or the pace of the switch is usually implemented.  
+
+### 6. In One Sentence, What Is Failback?  
+> **Failback ensures that services can be safely restored to the source side in case of a migration failure.**  
+
+---
+
+## VIII. Why Must “Full Data Transfer, Incremental Updates, Switching Over, Verification, and Failback” Be Considered Together?  
+Many people memorize these terms separately, but in practice, they form a complete cycle:  
+
+- **Full Data Transfer:** First, move all historical data;  
+- **Incremental Updates:** Continuously add any changes that occur afterward;  
+- **Switching Over:** Officially transfer services to the new system;  
+- **Verification:** Confirm that the migration results are correct;  
+- **Failback:** Provide a backup plan in case of failure.  
+
+Lacking any one of these steps makes the migration plan vulnerable.  
+
+For example:  
+
+#### Only full data transfer, no incremental updates  
+The target side will always be behind the source side.  
+
+#### Incremental updates, but no switching over plan  
+Data is transferred, but services cannot be switched over.  
+
+#### Switching over, but no verification  
+Problems are only discovered after the switch.  
+
+#### Switching over, but no failback plan  
+In case of failure, there is no way to restore services.  
+
+### 6. In One Sentence, How Are These Steps Related?  
+> **These five steps together form a migratory process that is executable, verifiable, and reversible.**  
+
+---
+
+## IX. How Are These Five Steps Applied in Different Types of Migrations?  
+
+### 1. Host Migration  
+- **Full Data Transfer:** Copy the system disk, data disks, and application environment;  
+- **Incremental Updates:** Synchronize subsequent changes;  
+- **Switching Over:** Stop applications, finalize synchronization, and start the target host;  
+- **Verification:** Check if services, ports, and data are functioning correctly;  
+- **Failback:** Switch back to the original host and access points.  
+
+### 2. Database Migration  
+- **Full Data Transfer:** Copy historical table structures and data;  
+- **Incremental Updates:** Sync changes in binlogs/logs;  
+- **Switching Over:** Stop writing, synchronize any remaining differences, and switch database connections;  
+- **Verification:** Verify table records, business functions, and consistency of key data;  
+- **Failback:** Switch back to the original database connection.  
+
+### 3. Object Storage Migration  
+- **Full Data Transfer:** Copy historical objects;  
+- **Incremental Updates:** Synchronize newly added or modified objects;  
+- **Switching Over:** Change domain names/CDNs/access addresses;  
+- **Verification:** Check object quantities, sizes, hashes, and access paths;  
+- **Failback:** Switch back to the original object storage access points.  
+
+---
+
+## X. Questions That Must Be Asked in Advance When Designing a Migration Plan  
+
+### 1. Regarding Full Data Transfer  
+- What is the total amount of data?  
+- How long does full data transfer预计 take?  
+- Can it be done in advance?  
+- Does it need to be done in batches?  
+
+### 2. Regarding Incremental Updates  
+- What is the mechanism for incremental updates?  
+- Is the delay controllable?  
+- Can it catch up during peak periods?  
+- Does it support deleting, overwriting, or synchronizing metadata?  
+
+### 3. Regarding Switching Over  
+- Who will be responsible for stopping writing?  
+- What is the order of switching?  
+- What are the potential impacts?  
+- How long is the switching window

@@ -1,24 +1,19 @@
 # Obsidian Graph View Configuration Guide
 
-This document records the **recommended Graph View configuration for the ops-skill-tree knowledge base**, ensuring the knowledge graph is clear, structurally stable, and has distinct modular layers.
+This document records the **recommended configurations for the Graph View in the ops-skill-tree knowledge base**, ensuring that the knowledge graph is clear, structurally stable, and has well-defined module hierarchies.
 
 ---
 
-# I. Graph View Objectives
+# I. Goals of the Graph View
 
-The objective of the Graph view is not "aesthetics", but:
+The purpose of the Graph View is not to look visually appealing, but rather to:
 
-- Observe knowledge base structure
-    
-- Discover knowledge gaps
-    
-- Quickly locate modules
-    
-- Form a technical system
-    
-    
+- Observe the structure of the knowledge base
+- Identify knowledge gaps
+- Quickly locate specific modules
+- Establish a technical system framework
 
-Ideal structure resembles:
+An ideal structure might look like this:
 
 ```
            Kubernetes
@@ -30,89 +25,85 @@ Ideal structure resembles:
 
 ---
 
-# II. Graph Force Parameters (Forces)
+# II. Graph Forces Parameters
 
-Open Graph's top-right settings → **Forces**
+Open the settings at the top-right corner of the Graph → **Forces**
 
 Recommended parameters:
 
 ```
-Central:0.30
-Links:1.00
-Exclusion:16
-Link distance:200
+Central force: 0.30
+Link force: 1.00
+Repulsion force: 16
+Link distance: 200
 ```
 
-If the graph becomes crowded:
+If the graph is too crowded:
 
 ```
-Exclusion:18
+Repulsion force: 18
 ```
 
-If the graph becomes scattered:
+If the graph is too scattered:
 
 ```
-Exclusion:12
+Repulsion force: 12
 ```
 
 Parameter explanations:
 
-|Parameter|Function|
-|---|---|
-|Center Force|Controls node aggregation toward the center|
-|Link Force|Controls connection strength between nodes|
-|Repulsion|Controls spacing between nodes|
-|Link Distance|Controls distance between modules|
+| Parameter | Function |
+|-----------|----------|
+| Central force | Controls node aggregation towards the center |
+| Link force | Determines the strength of connections between nodes |
+| Repulsion force | Regulates the spacing between nodes |
+| Link distance | Sets the distance between modules |
 
 ---
 
-# III. Display (Display Settings)
+# III. Display Settings
 
 Recommended settings:
 
 ```
-Show arrow: Close
-Show attachments: Close
-Show Isolated Nodes: Open
-Dilution unconnected nodes: open
+Show arrows: Off
+Show attachments: Off
+Show isolated nodes: On
+Diminish disconnected nodes: On
 Node size: Medium
 Text size: Medium
 ```
 
-Explanations:
+Explanation:
 
-- To observe all knowledge nodes in the current phase, **isolated nodes are enabled**
-    
-- Disabling attachments avoids Graph clutter
-    
+- At this stage, it is important to observe all knowledge nodes, so **isolated nodes should be displayed**.
+- Turning off attachments helps keep the Graph clutter-free.
 
 ---
 
-# IV. Filters (Filter Settings)
+# IV. Filters Settings
 
-Recommended:
+Recommendations:
 
 ```
-Label: Open
-Annex: Closed
-Unsolved Link: Close
-Isolated Node: Open
+Tags: On
+Attachments: Off
+Unresolved links: Off
+Isolated nodes: On
 ```
 
-Explanations:
+Explanation:
 
-- Tags are used for Graph coloring
-    
-- Disabling unresolved links reduces interference
-    
+- Tags are used to color code elements in the Graph.
+- Disabling unresolved links reduces visual distractions.
 
 ---
 
-# V. Graph Color Grouping Rules
+# V. Graph Color Scheme Rules
 
-Graph colors only use **primary tags**.
+The Graph uses only **first-level tags** for coloring.
 
-Primary tags include:
+First-level tags include:
 
 ```
 #windows
@@ -137,82 +128,68 @@ Primary tags include:
 #runbook
 ```
 
-Color reference:
+Color references:
 
-See file:
+See the file:
 
 ```
-99-Knowledge base management/Level 1 Tab Color Table.md
+99-Knowledge Base Management/First-Level Tag Color Scheme.md
 ```
 
 Rules:
 
-- Primary tags → Graph coloring
-    
-- Secondary tags → Used for search
-    
-- Tertiary tags → Technical subcategories, not involved in coloring
-    
+- First-level tags → Used for Graph coloring
+- Second-level tags → Used for search purposes
+- Third-level tags → Used for technical subdivision but not for coloring
 
 ---
 
 # VI. Graph Search Filtering
 
-To avoid management files entering the Graph, recommend entering in the Graph search bar:
+To prevent management files from appearing in the Graph, it is recommended to use the following filter in the search bar:
 
 ```
--path:"99-Knowledge base management" -path:"scripts" -path:"attachments"
+-path:"99-Knowledge Base Management" -path:"scripts" -path:"attachments"
 ```
 
 Effect:
 
-The Graph only displays technical knowledge nodes.
+The Graph will only display technical knowledge nodes.
 
 ---
 
-# VII. Common Graph Viewing Methods
+# VII. Common Ways to Use the Graph
 
 ## 1. Global Knowledge Graph
 
-Purpose:
+Use case:
 
-- View overall knowledge structure
-    
-- View module scale
-    
-    
+- View the overall structure of the knowledge base
+- Assess the scale of different modules
 
 Search bar:
 
 ```
--path:"99-Knowledge base management"
+-path:"99-Knowledge Base Management"
 ```
 
 ---
 
-## 2. View Kubernetes Module
+## 2. View Kubernetes Modules
 
 ```
 tag:#kubernetes
 ```
 
-You can see:
+This will display:
 
 - Pod
-    
 - Deployment
-    
 - Service
-    
 - Ingress
-    
 - PV
-    
 - PVC
-    
 - StorageClass
-    
-    
 
 ---
 
@@ -224,7 +201,7 @@ tag:#linux tag:#network
 
 ---
 
-## 4. View Storage System
+## 4. View the Storage System
 
 ```
 tag:#storage
@@ -232,19 +209,19 @@ tag:#storage
 
 ---
 
-# VIII. Final Graph Structure
+# VIII. Final Goal Structure of the Graph
 
-The knowledge graph will eventually form a **technical galaxy structure**:
+The knowledge graph will eventually take on a **technical galaxy structure**:
 
 ```
 Linux
  ├─Network
  ├─Storage
- ├─System
- └─Error
+ └─System
+ └─Troubleshooting
 
 Kubernetes
- ├─Pod
+├─Pod
  ├─Service
  ├─Ingress
  └─Storage
@@ -256,31 +233,24 @@ Storage
  └─Longhorn
 ```
 
-Each module is an independent knowledge center.
+Each module serves as an independent knowledge center.
 
 ---
 
-# IX. Graph Usage Recommendations
+# IX. Tips for Using the Graph
 
-Daily usage:
+Daily usage recommendations:
 
-1. Write notes
-    
+1. Take notes
 2. Add tags
-    
-3. Add [[Internal links]]
-    
-4. View Graph
-    
-    
+3. Include [[internal links]]
+4. Consult the Graph regularly
 
-Avoid frequent structural adjustments.
-
-The Graph will automatically optimize as the knowledge base grows.
+Avoid frequently adjusting the graph structure, as it will automatically optimize as the knowledge base grows.
 
 ---
 
-# X. Knowledge Base Development Stages
+# X. Stages of Knowledge Base Development
 
 Current stage:
 
@@ -291,25 +261,15 @@ Structure building
 Next stage:
 
 ```
-Fill technical content
+Filling with technical content
 ```
 
 Final stage:
 
 ```
-Developing an integrated knowledge system
+Forming a complete operations and maintenance knowledge system
 ```
 
 ---
 
-# XI. Graph Usage Principles
-
-The Graph is an **auxiliary tool**, not the core.
-
-Core is:
-
-- Knowledge structure
-    
-- Technical understanding
-    
-- Practical experience
+#

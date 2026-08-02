@@ -1,10 +1,10 @@
-#Clear.
+# Security
 
 # Linux Security Hardening
 
 ## Official Documentation
 
-Official website:
+Website:
 
 Documentation:
 

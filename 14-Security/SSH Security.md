@@ -1,10 +1,10 @@
-#Clear.
+# Security
 
 # SSH Security
 
 ## Official Documentation
 
-Official website:
+Website:
 
 Documentation:
 

@@ -1,10 +1,10 @@
-#Virtual
+# Virtualization
 
-# Virtualization Principles
+# Principles of Virtualization
 
 ## Official Documentation
 
-Official website:
+Website:
 
 Documentation:
 
